@@ -1,0 +1,57 @@
+---
+alwaysApply: true
+---
+# shadcn/ui Usage Guidelines
+
+This project uses **shadcn/ui** for all UI elements and components.
+
+## Configuration
+
+shadcn/ui is configured in [components.json](mdc:components.json) with the following settings:
+- Style: New York
+- Base Color: Neutral
+- Icon Library: lucide-react
+- Components Path: `@/components/ui`
+- Utils Path: `@/lib/utils`
+
+## Adding Components
+
+To add new shadcn/ui components to the project, use:
+
+```bash
+npx shadcn@latest add <component-name>
+```
+
+Examples:
+```bash
+npx shadcn@latest add button
+npx shadcn@latest add card
+npx shadcn@latest add input
+```
+
+## Initialization (if needed)
+
+If shadcn/ui is not initialized in the project, use:
+
+```bash
+npx shadcn@latest init -d
+```
+
+## Guidelines
+
+1. **Always use shadcn/ui components** for UI elements instead of building custom components from scratch
+2. **Use the `cn()` utility** from [lib/utils.ts](mdc:lib/utils.ts) for conditional class merging
+3. **Follow the component patterns** established by shadcn/ui for consistency
+4. **Leverage Tailwind CSS** for styling customizations
+5. **Use lucide-react icons** for all iconography needs
+
+## Available Component Categories
+
+- Form elements (Input, Select, Checkbox, Radio, etc.)
+- Layout components (Card, Sheet, Dialog, Tabs, etc.)
+- Navigation (Navigation Menu, Breadcrumb, Pagination, etc.)
+- Feedback (Alert, Toast, Progress, Skeleton, etc.)
+- Data display (Table, Badge, Avatar, etc.)
+- Overlays (Dialog, Popover, Tooltip, etc.)
+
+Always check the [shadcn/ui documentation](https://ui.shadcn.com/docs/components) for the latest components and usage patterns.
