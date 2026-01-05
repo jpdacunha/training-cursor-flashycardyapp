@@ -1,0 +1,47 @@
+---
+alwaysApply: true
+---
+
+# Language Preference
+
+## Communication Language
+
+**Always respond in English**, regardless of the language used by the user in their queries. This applies to:
+- All explanations and responses
+- Code comments
+- Documentation
+- Error messages and warnings
+- Commit messages
+
+## Code Comments
+
+All code comments must be written in **English only**. This includes:
+- Inline comments
+- Block comments
+- JSDoc/TSDoc documentation
+- TODO/FIXME notes
+- Function and class descriptions
+
+## Example
+
+Even if the user asks a question in French (or any other language), always provide the response in English with English code comments.
+
+```typescript
+// Good: Calculate the total price with tax
+const calculateTotal = (price: number, taxRate: number): number => {
+  return price * (1 + taxRate);
+};
+
+// Bad: Calculer le prix total avec les taxes
+const calculateTotal = (price: number, taxRate: number): number => {
+  return price * (1 + taxRate);
+};
+```
+
+## Rationale
+
+Maintaining English as the primary language for all technical communication ensures:
+- Consistency across the codebase
+- Better collaboration with international teams
+- Easier integration with English-based tools and documentation
+- Improved code maintainability
