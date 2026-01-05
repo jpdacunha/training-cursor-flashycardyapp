@@ -9,6 +9,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import { Button } from "@/components/ui/button";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -38,14 +39,14 @@ export default function RootLayout({
             <div className="flex items-center gap-4">
               <SignedOut>
                 <SignInButton mode="modal">
-                  <button className="px-4 py-2 rounded-md bg-zinc-800 hover:bg-zinc-700 transition-colors">
+                  <Button variant="secondary">
                     Sign In
-                  </button>
+                  </Button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="px-4 py-2 rounded-md bg-zinc-50 text-black hover:bg-zinc-200 transition-colors">
+                  <Button>
                     Sign Up
-                  </button>
+                  </Button>
                 </SignUpButton>
               </SignedOut>
               <SignedIn>
