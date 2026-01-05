@@ -8,6 +8,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -27,31 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider
-      appearance={{
-        baseTheme: undefined,
-        variables: {
-          colorBackground: "#000000",
-          colorPrimary: "#ffffff",
-          colorText: "#ffffff",
-          colorTextSecondary: "#a1a1aa",
-          colorInputBackground: "#18181b",
-          colorInputText: "#ffffff",
-        },
-        elements: {
-          card: "bg-black border border-zinc-800",
-          headerTitle: "text-white",
-          headerSubtitle: "text-zinc-400",
-          socialButtonsBlockButton: "bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-white",
-          formButtonPrimary: "bg-white text-black hover:bg-zinc-200",
-          footerActionLink: "text-white hover:text-zinc-300",
-          formFieldLabel: "text-zinc-300",
-          formFieldInput: "bg-zinc-900 border-zinc-800 text-white",
-          identityPreviewText: "text-white",
-          identityPreviewEditButton: "text-zinc-400 hover:text-white",
-        },
-      }}
-    >
+    <ClerkProvider appearance={{ baseTheme: dark }}>
       <html lang="en" className="dark">
         <body
           className={`${poppins.variable} antialiased`}
@@ -72,17 +49,7 @@ export default function RootLayout({
                 </SignUpButton>
               </SignedOut>
               <SignedIn>
-                <UserButton
-                  appearance={{
-                    elements: {
-                      userButtonAvatarBox: "w-10 h-10",
-                      userButtonPopoverCard: "bg-black border border-zinc-800",
-                      userButtonPopoverActionButton: "text-white hover:bg-zinc-900",
-                      userButtonPopoverActionButtonText: "text-white",
-                      userButtonPopoverFooter: "hidden",
-                    },
-                  }}
-                />
+                <UserButton />
               </SignedIn>
             </div>
           </header>
