@@ -1,0 +1,72 @@
+---
+alwaysApply: true
+---
+# Documentation Management Guidelines
+
+## Documentation Organization
+
+All markdown documentation files must be stored in the `documentation/` directory, with the exception of [README.md](mdc:README.md) which must remain at the project root.
+
+### Directory Structure
+
+```
+/
+├── README.md (root-level project overview)
+└── documentation/
+    ├── architecture.md
+    ├── database.md
+    ├── testing.md
+    └── ... (other documentation files)
+```
+
+## Documentation Maintenance
+
+**Critical Rule**: Whenever you modify code in the project, you **must**:
+
+1. **Identify affected documentation**: Determine which documentation files in the `documentation/` directory are related to the code changes
+2. **Update the documentation**: Ensure all relevant documentation is updated to reflect the code changes
+3. **Maintain accuracy**: Keep documentation synchronized with the actual implementation
+4. **Update references**: If adding new documentation files, update [README.md](mdc:README.md) to reference them
+
+## README.md Structure
+
+The [README.md](mdc:README.md) file at the project root serves as the main entry point and must include:
+
+1. **Project Description**: A general description of what the project does
+2. **Architecture Overview**: High-level architecture and project structure
+3. **Technologies Used**: List of frameworks, libraries, and tools used in the project
+4. **Functional Description**: What the application does from a functional perspective
+5. **Documentation Index**: A comprehensive list of all documentation files in the `documentation/` directory with:
+   - File name (linked)
+   - Brief description of the topic covered
+
+### Example Documentation Index Format
+
+```markdown
+## Documentation
+
+- [Architecture](documentation/architecture.md) - Detailed system architecture and design patterns
+- [Database](documentation/database.md) - Database schema, migrations, and query patterns
+- [Testing](documentation/testing.md) - Testing strategy, test structure, and guidelines
+- [API](documentation/api.md) - API endpoints and integration guides
+```
+
+## When Creating New Features
+
+When adding new features or making significant changes:
+
+1. Create or update relevant documentation files in `documentation/`
+2. Ensure [README.md](mdc:README.md) includes references to the new documentation
+3. Write documentation in English only
+4. Use clear, concise language with code examples where appropriate
+
+## Workflow Checklist
+
+Before completing any code modification task:
+
+- [ ] Code changes are complete
+- [ ] Related documentation files are identified
+- [ ] Documentation files are updated to reflect changes
+- [ ] [README.md](mdc:README.md) references all documentation files
+- [ ] All documentation is in English
+- [ ] All documentation is in the `documentation/` directory (except README.md)
