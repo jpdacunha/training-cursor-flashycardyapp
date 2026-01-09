@@ -1,0 +1,19 @@
+{
+  "Layout": {
+    "title": "Flashy Cardy App",
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+  },
+  "Home": {
+    "title": "To get started, edit the page.tsx file.",
+    "description": "Looking for a starting point or more instructions? Head over to {templates} or the {learning} center.",
+    "templates": "Templates",
+    "learning": "Learning",
+    "deployNow": "Deploy Now",
+    "documentation": "Documentation"
+  },
+  "LanguageSwitcher": {
+    "selectLanguage": "Select language"
+  }
+}
+

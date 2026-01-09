@@ -1,0 +1,290 @@
+---
+alwaysApply: true
+description: Internationalization requirements and patterns using next-intl
+---
+
+# Internationalization (i18n) Requirements
+
+## Core Principle
+
+**ALL UI labels, text, messages, and user-facing content MUST be translatable** using the `next-intl` framework. No hardcoded text should appear in the UI.
+
+## Supported Languages
+
+The application currently supports:
+- **English (en)** - Default language
+- **French (fr)** - Secondary language
+
+The architecture is designed to easily support additional languages.
+
+## Implementation Architecture
+
+### Directory Structure
+
+```
+messages/
+├── en.json          # English translations
+├── fr.json          # French translations
+└── [new-lang].json  # Add new languages here
+
+i18n/
+├── routing.ts       # Locale configuration and navigation
+└── request.ts       # Message loading configuration
+
+app/
+├── layout.tsx                 # Root layout (minimal)
+└── [locale]/                  # Locale-based routing
+    ├── layout.tsx             # Server component with NextIntlClientProvider
+    └── page.tsx               # Client component using translations
+```
+
+### Server vs Client Components
+
+**CRITICAL RULE**: The `useTranslations` hook can ONLY be used in client components.
+
+#### Server Components Pattern
+```typescript
+// app/[locale]/layout.tsx
+import { getMessages } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
+
+export default async function LocaleLayout({ children, params }) {
+  const { locale } = await params;
+  const messages = await getMessages();
+
+  return (
+    <NextIntlClientProvider messages={messages}>
+      {/* Render client components here */}
+    </NextIntlClientProvider>
+  );
+}
+```
+
+#### Client Components Pattern
+```typescript
+// components/some-component.tsx
+"use client";
+
+import { useTranslations } from "next-intl";
+
+export function SomeComponent() {
+  const t = useTranslations("Namespace");
+  
+  return <h1>{t("key")}</h1>;
+}
+```
+
+### Translation File Structure
+
+Organize translations by namespace in JSON files:
+
+```json
+{
+  "ComponentName": {
+    "label": "Text in English",
+    "button": "Click here",
+    "description": "Some description"
+  },
+  "AnotherComponent": {
+    "title": "Another title"
+  }
+}
+```
+
+### Usage Patterns
+
+#### Simple Text Translation
+```typescript
+const t = useTranslations("Namespace");
+return <h1>{t("key")}</h1>;
+```
+
+#### Rich Text with Embedded Components
+```typescript
+const t = useTranslations("Namespace");
+
+return (
+  <p>
+    {t.rich("description", {
+      link: (chunks) => <a href="...">{chunks}</a>,
+      bold: (chunks) => <strong>{chunks}</strong>
+    })}
+  </p>
+);
+```
+
+In translation file:
+```json
+{
+  "description": "This is {link} with {bold} formatting"
+}
+```
+
+#### Pluralization
+```typescript
+t("items", { count: 5 });
+```
+
+```json
+{
+  "items": "{count, plural, =0 {no items} one {# item} other {# items}}"
+}
+```
+
+## Adding a New Language
+
+To add support for a new language (e.g., Spanish):
+
+### 1. Create Translation File
+Create `messages/es.json` with all translation keys translated to Spanish.
+
+### 2. Update Routing Configuration
+```typescript
+// i18n/routing.ts
+export const routing = defineRouting({
+  locales: ['en', 'fr', 'es'], // Add new locale
+  defaultLocale: 'en',
+  localePrefix: 'as-needed'
+});
+```
+
+### 3. Update Language Switcher
+```typescript
+// components/language-switcher.tsx
+const languages: Record<Locale, { label: string; flag: string }> = {
+  en: { label: "English", flag: "🇬🇧" },
+  fr: { label: "Français", flag: "🇫🇷" },
+  es: { label: "Español", flag: "🇪🇸" } // Add new language
+};
+```
+
+### 4. Update TypeScript Types (if needed)
+```typescript
+type Locale = "en" | "fr" | "es";
+```
+
+## Best Practices
+
+### DO ✅
+
+1. **Always use client components for hooks**
+   - Mark components with `"use client"` when using `useTranslations`
+   
+2. **Organize by namespace**
+   - Group related translations under meaningful namespaces
+   - Example: `Layout`, `Home`, `Dashboard`, `Settings`
+
+3. **Use descriptive keys**
+   - Use camelCase: `signInButton`, `welcomeMessage`
+   - Be specific: `confirmDeleteButton` not just `confirm`
+
+4. **Keep translations in sync**
+   - When adding keys to one language file, update ALL language files
+   - Use the same structure across all translation files
+
+5. **Use rich text for complex content**
+   - For text with embedded links, formatting, or components
+   - Use `t.rich()` instead of string concatenation
+
+6. **Test in all languages**
+   - Verify UI layout works with different text lengths
+   - French text is typically 20-30% longer than English
+
+### DON'T ❌
+
+1. **Never hardcode UI text**
+   ```typescript
+   // ❌ BAD
+   <button>Click here</button>
+   
+   // ✅ GOOD
+   <button>{t("clickButton")}</button>
+   ```
+
+2. **Don't use hooks in server components**
+   ```typescript
+   // ❌ BAD - async server component
+   export default async function Page() {
+     const t = useTranslations(); // Error!
+   }
+   
+   // ✅ GOOD - client component
+   "use client";
+   export default function Page() {
+     const t = useTranslations();
+   }
+   ```
+
+3. **Don't mix server and client translation patterns**
+   - Use `getTranslations` in server components (if needed)
+   - Use `useTranslations` hook in client components
+
+4. **Don't duplicate translation keys**
+   - Reuse common translations across namespaces when appropriate
+   - Consider a `Common` namespace for shared text
+
+5. **Don't concatenate translated strings**
+   ```typescript
+   // ❌ BAD
+   t("hello") + " " + t("world")
+   
+   // ✅ GOOD
+   t("helloWorld") // Single key with full sentence
+   ```
+
+## Navigation with Locales
+
+Always use the locale-aware navigation utilities:
+
+```typescript
+import { Link, useRouter, usePathname } from "@/i18n/routing";
+
+// Link automatically handles locale
+<Link href="/about">About</Link>
+
+// Router with locale support
+const router = useRouter();
+router.push("/profile");
+
+// Pathname without locale prefix
+const pathname = usePathname();
+```
+
+**Never** use Next.js default `Link` or `useRouter` for internal navigation.
+
+## URL Structure
+
+- Default locale (en): `/` → `/about`
+- Other locales: `/fr` → `/fr/about`
+
+The locale is detected from:
+1. URL path
+2. User's browser language
+3. Default locale (en)
+
+## Common Errors and Solutions
+
+### Error: "Invalid hook call"
+**Cause**: Using `useTranslations` in a server component  
+**Solution**: Add `"use client"` directive or extract to client component
+
+### Error: "Functions are not valid as a child"
+**Cause**: Server component with hooks trying to serialize render functions  
+**Solution**: Convert component to client component with `"use client"`
+
+### Translation not appearing
+**Cause**: Missing key or wrong namespace  
+**Solution**: Verify key exists in all language files and namespace matches
+
+## Documentation
+
+For detailed implementation guide, see [documentation/internationalization.md](mdc:documentation/internationalization.md)
+
+## Workflow Checklist
+
+When adding new UI text:
+- [ ] Add translation keys to `messages/en.json`
+- [ ] Add translation keys to `messages/fr.json` (and all other language files)
+- [ ] Use `useTranslations` hook in client component
+- [ ] Test in both English and French
+- [ ] Verify layout works with different text lengths

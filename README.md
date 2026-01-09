@@ -14,18 +14,28 @@ FlashyCardyApp is a web-based flashcard application designed to help users creat
 📦 training-cursor-flashycardyapp/
 ├── 📂 app/                      # Next.js App Router
 │   ├── 📂 api/                  # API routes
+│   ├── 📂 [locale]/             # Locale-specific routes
+│   │   ├── layout.tsx           # Locale layout with UI
+│   │   └── page.tsx             # Home page
 │   ├── layout.tsx               # Root layout
-│   ├── page.tsx                 # Home page
 │   └── globals.css              # Global styles
 ├── 📂 components/               # React components
-│   └── 📂 ui/                   # shadcn/ui components
+│   ├── 📂 ui/                   # shadcn/ui components
+│   └── language-switcher.tsx    # Language selection component
 ├── 📂 documentation/            # Project documentation
 │   ├── database.md              # Database and ORM guide
+│   ├── internationalization.md  # i18n setup and usage
 │   └── testing.md               # Testing documentation
 ├── 📂 drizzle/                  # Database migrations
+├── 📂 i18n/                     # Internationalization config
+│   ├── request.ts               # next-intl configuration
+│   └── routing.ts               # Locale routing setup
 ├── 📂 lib/                      # Shared utilities
 │   ├── db.ts                    # Drizzle ORM instance
 │   └── utils.ts                 # Utility functions
+├── 📂 messages/                 # Translation files
+│   ├── en.json                  # English translations
+│   └── fr.json                  # French translations
 ├── 📂 src/                      # Source code
 │   ├── 📂 db/                   # Database schemas
 │   │   └── schema.ts            # Table definitions
@@ -78,6 +88,11 @@ FlashyCardyApp is a web-based flashcard application designed to help users creat
 - **Tailwind CSS 4** - Utility-first CSS framework
 - **Radix UI** - Headless UI primitives
 - **Lucide React** - Icon library
+
+### Internationalization
+- **next-intl** - i18n solution for Next.js App Router
+- Support for English (en) and French (fr)
+- Locale-based routing with automatic detection
 
 ### Testing
 - **Vitest 2.1.8** - Unit testing framework
@@ -182,6 +197,7 @@ npx drizzle-kit studio    # Open Drizzle Studio (visual database browser)
 Detailed documentation is available in the `documentation/` directory:
 
 - [**Database Guide**](documentation/database.md) - Complete guide to Drizzle ORM setup, schema definitions, database operations, and migration management
+- [**Internationalization**](documentation/internationalization.md) - i18n setup, adding languages, translation management, and usage patterns
 - [**Testing Documentation**](documentation/testing.md) - Testing strategy, test suite structure, running tests, and adding new tests
 
 ## 🤝 Contributing

@@ -1,0 +1,78 @@
+---
+alwaysApply: true
+---
+# Shared Services Architecture
+
+## Organization Principle
+
+All utility methods must be grouped into **thematic shared services**. These services are centralized in the [lib/](mdc:lib) directory to promote code reusability and maintainability.
+
+## Service Categories
+
+Services should be organized by domain/theme:
+
+- **Database utilities**: [lib/db.ts](mdc:lib/db.ts) - Database connection and query helpers
+- **General utilities**: [lib/utils.ts](mdc:lib/utils.ts) - Common helper functions (cn, formatting, etc.)
+- **API helpers**: Create `lib/api.ts` for API-related utilities
+- **Validation**: Create `lib/validation.ts` for data validation utilities
+- **Date/Time**: Create `lib/datetime.ts` for date manipulation utilities
+- **Deck operations**: Create `lib/deck-service.ts` for deck-specific business logic
+- **Card operations**: Create `lib/card-service.ts` for card-specific business logic
+- **Authentication**: Create `lib/auth-helpers.ts` for Clerk-related utilities
+
+## Code Generation Workflow
+
+Before generating any code, **ALWAYS**:
+
+1. **Check existing services**: Review what utilities already exist in the [lib/](mdc:lib) directory
+2. **Evaluate reusability**: Determine if existing services can be used or extended
+3. **Avoid duplication**: Never recreate utility functions that already exist
+4. **Group by theme**: If creating new utilities, place them in the appropriate thematic service file
+5. **Create new service files**: If a new category is needed, create a new service file with a clear, descriptive name
+
+## Example Structure
+
+```typescript
+// lib/deck-service.ts - Deck-specific business logic
+import { db } from './db';
+import { decksTable } from '@/src/db/schema';
+
+export async function getUserDecks(userId: string) {
+  return await db.select().from(decksTable).where(eq(decksTable.userId, userId));
+}
+
+export async function createDeck(userId: string, title: string, description?: string) {
+  // Deck creation logic
+}
+```
+
+```typescript
+// lib/card-service.ts - Card-specific business logic
+import { db } from './db';
+import { cardsTable } from '@/src/db/schema';
+
+export async function getDeckCards(deckId: number) {
+  return await db.select().from(cardsTable).where(eq(cardsTable.deckId, deckId));
+}
+
+export async function createCard(deckId: number, front: string, back: string) {
+  // Card creation logic
+}
+```
+
+## Best Practices
+
+- **Single Responsibility**: Each service file should have a clear, focused purpose
+- **Type Safety**: Always export proper TypeScript types and interfaces
+- **Error Handling**: Include consistent error handling in service functions
+- **Documentation**: Add JSDoc comments for all exported functions
+- **Testing**: Services should be easily testable in isolation
+- **Naming**: Use descriptive names that clearly indicate the service's purpose
+
+## Benefits
+
+- **DRY Principle**: Don't Repeat Yourself - write once, use everywhere
+- **Maintainability**: Changes to utility logic only need to be made in one place
+- **Testability**: Isolated services are easier to unit test
+- **Discoverability**: Developers can easily find existing utilities
+- **Consistency**: Promotes consistent patterns across the application

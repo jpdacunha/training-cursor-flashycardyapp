@@ -12,3 +12,7 @@ const sql = neon(process.env.DATABASE_URL);
 // Créer l'instance Drizzle
 export const db = drizzle({ client: sql });
 
+
+
+
+

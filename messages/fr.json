@@ -1,0 +1,19 @@
+{
+  "Layout": {
+    "title": "Flashy Cardy App",
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire"
+  },
+  "Home": {
+    "title": "Pour commencer, modifiez le fichier page.tsx.",
+    "description": "Vous cherchez un point de départ ou plus d'instructions ? Consultez les {templates} ou le centre d'{learning}.",
+    "templates": "Modèles",
+    "learning": "Apprentissage",
+    "deployNow": "Déployer maintenant",
+    "documentation": "Documentation"
+  },
+  "LanguageSwitcher": {
+    "selectLanguage": "Sélectionner la langue"
+  }
+}
+
