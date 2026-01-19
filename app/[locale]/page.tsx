@@ -6,6 +6,34 @@ import { useTranslations } from "next-intl";
 export default function Home() {
   const t = useTranslations("Home");
 
+  // #region agent log - Verification that t.rich works correctly
+  let richResult;
+  try {
+    richResult = t.rich("description", {
+      templates: (chunks) => (
+        <a
+          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          className="font-medium text-zinc-950 dark:text-zinc-50"
+        >
+          {chunks}
+        </a>
+      ),
+      learning: (chunks) => (
+        <a
+          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          className="font-medium text-zinc-950 dark:text-zinc-50"
+        >
+          {chunks}
+        </a>
+      ),
+    });
+    
+    fetch('http://127.0.0.1:7242/ingest/141c0218-2a81-41cf-a26b-42049c4f3a55',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'page.tsx:25',message:'t.rich SUCCESS - page rendering',data:{success:true},timestamp:Date.now(),sessionId:'debug-session',runId:'final-check',hypothesisId:'RESOLVED'})}).catch(()=>{});
+  } catch (error) {
+    fetch('http://127.0.0.1:7242/ingest/141c0218-2a81-41cf-a26b-42049c4f3a55',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'page.tsx:27',message:'ERROR in t.rich',data:{errorMessage:String(error)},timestamp:Date.now(),sessionId:'debug-session',runId:'final-check',hypothesisId:'FAILED'})}).catch(()=>{});
+  }
+  // #endregion
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
@@ -22,24 +50,7 @@ export default function Home() {
             {t("title")}
           </h1>
           <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            {t.rich("description", {
-              templates: (chunks) => (
-                <a
-                  href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                  className="font-medium text-zinc-950 dark:text-zinc-50"
-                >
-                  {chunks}
-                </a>
-              ),
-              learning: (chunks) => (
-                <a
-                  href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                  className="font-medium text-zinc-950 dark:text-zinc-50"
-                >
-                  {chunks}
-                </a>
-              ),
-            })}
+            {richResult}
           </p>
         </div>
         <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
