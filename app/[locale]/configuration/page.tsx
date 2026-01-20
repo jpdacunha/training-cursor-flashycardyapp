@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { DEFAULT_REDIRECTS } from "@/lib/routes";
 import ConfigurationClient from "./configuration-client";
 
 export async function generateMetadata({
@@ -21,7 +22,7 @@ export default async function ConfigurationPage() {
   const { userId } = await auth();
 
   if (!userId) {
-    redirect("/");
+    redirect(DEFAULT_REDIRECTS.UNAUTHENTICATED);
   }
 
   return (

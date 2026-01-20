@@ -1,16 +1,11 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
+import { PUBLIC_ROUTE_PATTERNS } from "./lib/routes";
 
 const intlMiddleware = createMiddleware(routing);
 
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/:locale",
-  "/:locale/sign-in(.*)",
-  "/:locale/sign-up(.*)",
-  "/:locale/credits",
-]);
+const isPublicRoute = createRouteMatcher(PUBLIC_ROUTE_PATTERNS);
 
 export default clerkMiddleware(
   async (auth, request) => {
@@ -31,4 +26,3 @@ export const config = {
     "/(api|trpc)(.*)",
   ],
 };
-

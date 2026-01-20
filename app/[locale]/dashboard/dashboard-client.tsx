@@ -2,6 +2,7 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { Calendar } from "lucide-react";
+import { Link } from "@/i18n/routing";
 import {
   Card,
   CardContent,
@@ -33,25 +34,27 @@ export default function DashboardClient({ decks }: { decks: Deck[] }) {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {decks.map((deck) => (
-              <Card key={deck.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle>{deck.title}</CardTitle>
-                  <CardDescription>{deck.description || ''}</CardDescription>
-                </CardHeader>
-                <Separator />
-                <CardFooter className="flex justify-between text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    <span className="font-medium">{t("createdAt")}:</span>
-                    <span>{new Date(deck.createdAt).toLocaleDateString(locale)}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    <span className="font-medium">{t("updatedAt")}:</span>
-                    <span>{new Date(deck.updatedAt).toLocaleDateString(locale)}</span>
-                  </div>
-                </CardFooter>
-              </Card>
+              <Link key={deck.id} href={`/decks/${deck.id}`} className="block">
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                  <CardHeader>
+                    <CardTitle>{deck.title}</CardTitle>
+                    <CardDescription>{deck.description || ''}</CardDescription>
+                  </CardHeader>
+                  <Separator />
+                  <CardFooter className="flex justify-between text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      <span className="font-medium">{t("createdAt")}:</span>
+                      <span>{new Date(deck.createdAt).toLocaleDateString(locale)}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      <span className="font-medium">{t("updatedAt")}:</span>
+                      <span>{new Date(deck.updatedAt).toLocaleDateString(locale)}</span>
+                    </div>
+                  </CardFooter>
+                </Card>
+              </Link>
             ))}
 
           </div>

@@ -43,6 +43,7 @@ FlashyCardyApp is a web-based flashcard application designed to help users creat
 │   └── routing.ts               # Locale routing setup
 ├── 📂 lib/                      # Shared utilities
 │   ├── db.ts                    # Drizzle ORM instance
+│   ├── routes.ts                # Centralized route configuration
 │   └── utils.ts                 # Utility functions
 ├── 📂 messages/                 # Translation files
 │   ├── en.json                  # English translations
@@ -61,7 +62,8 @@ FlashyCardyApp is a web-based flashcard application designed to help users creat
 2. **Authentication Layer** (Clerk)
    - User authentication and management
    - Session handling
-   - Protected routes
+   - Protected routes via middleware
+   - Centralized route configuration ([lib/routes.ts](mdc:lib/routes.ts))
 
 3. **API Layer** (Next.js API Routes)
    - RESTful endpoints
