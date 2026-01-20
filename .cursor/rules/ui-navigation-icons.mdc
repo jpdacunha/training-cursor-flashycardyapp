@@ -1,0 +1,228 @@
+---
+globs: **/header.tsx,**/footer.tsx
+description: Guidelines for adding icons to navigation links in header and footer components
+---
+
+# Navigation Icons Guidelines
+
+## Core Principle
+
+**ALL navigation links** in the header and footer components **MUST** be prefixed with an appropriate icon that reflects the link's label and purpose.
+
+## Icon Library
+
+Use **lucide-react** icons (as configured in the project's shadcn/ui setup).
+
+```typescript
+import { Settings, Home, CreditCard, LayoutDashboard, User, LogIn, LogOut, Menu, X } from 'lucide-react';
+```
+
+## Icon Selection by Label
+
+Choose icons that semantically match the navigation label:
+
+| Label/Purpose | Icon | Import |
+|---------------|------|--------|
+| Home / Accueil | `Home` | `lucide-react` |
+| Dashboard / Tableau de bord | `LayoutDashboard` | `lucide-react` |
+| Settings / Configuration / Paramètres | `Settings` | `lucide-react` |
+| Credits / Crédits | `CreditCard` or `Coins` | `lucide-react` |
+| Profile / Profil | `User` or `UserCircle` | `lucide-react` |
+| Sign In / Connexion | `LogIn` | `lucide-react` |
+| Sign Up / Inscription | `UserPlus` | `lucide-react` |
+| Sign Out / Déconnexion | `LogOut` | `lucide-react` |
+| About / À propos | `Info` | `lucide-react` |
+| Contact | `Mail` or `MessageCircle` | `lucide-react` |
+| Help / Aide | `HelpCircle` | `lucide-react` |
+| Decks | `Layers` or `BookOpen` | `lucide-react` |
+| Cards / Flashcards | `CreditCard` or `FileText` | `lucide-react` |
+| Menu (mobile) | `Menu` | `lucide-react` |
+| Close (mobile menu) | `X` | `lucide-react` |
+
+## Implementation Pattern
+
+### For Desktop Navigation
+
+```typescript
+import { Home, Settings, LayoutDashboard } from 'lucide-react';
+import { Link } from '@/i18n/routing';
+
+<nav>
+  <Link href="/">
+    <Home className="w-4 h-4 mr-2" />
+    {t("home")}
+  </Link>
+  
+  <Link href="/dashboard">
+    <LayoutDashboard className="w-4 h-4 mr-2" />
+    {t("dashboard")}
+  </Link>
+  
+  <Link href="/configuration">
+    <Settings className="w-4 h-4 mr-2" />
+    {t("configuration")}
+  </Link>
+</nav>
+```
+
+### For Mobile Navigation (in DropdownMenu)
+
+```typescript
+import { Home, Settings, LayoutDashboard, Menu } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+<DropdownMenu>
+  <DropdownMenuTrigger>
+    <Menu className="h-6 w-6" />
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem>
+      <Home className="w-4 h-4 mr-2" />
+      {t("home")}
+    </DropdownMenuItem>
+    <DropdownMenuItem>
+      <LayoutDashboard className="w-4 h-4 mr-2" />
+      {t("dashboard")}
+    </DropdownMenuItem>
+    <DropdownMenuItem>
+      <Settings className="w-4 h-4 mr-2" />
+      {t("configuration")}
+    </DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+### For Button Components
+
+```typescript
+import { LogIn, LogOut } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+<Button>
+  <LogIn className="w-4 h-4 mr-2" />
+  {t("signIn")}
+</Button>
+
+<Button variant="outline">
+  <LogOut className="w-4 h-4 mr-2" />
+  {t("signOut")}
+</Button>
+```
+
+## Icon Sizing
+
+- **Desktop navigation links**: `w-4 h-4` (16px)
+- **Mobile menu icon**: `h-6 w-6` (24px)
+- **Dropdown menu items**: `w-4 h-4` (16px)
+- **Button icons**: `w-4 h-4` (16px)
+
+## Icon Spacing
+
+Always add spacing between icon and text:
+- Use `mr-2` (margin-right: 0.5rem) for left-to-right layouts
+- Use `ml-2` (margin-left: 0.5rem) for right-to-left layouts (if applicable)
+
+## Consistency Rules
+
+1. **Same label = Same icon**: If a label appears in both header and footer, use the same icon
+2. **Semantic meaning**: Choose icons that clearly represent the action or destination
+3. **Lucide-react only**: Never use other icon libraries
+4. **Always prefix**: Icons always come before the text label (left side)
+5. **Conditional rendering**: Only show icons when links are visible
+
+## Internationalization
+
+When labels are translated (English/French), the icon remains the same:
+
+```typescript
+// English: Settings + Settings icon
+// French: Configuration + Settings icon (same icon)
+
+<Link href="/configuration">
+  <Settings className="w-4 h-4 mr-2" />
+  {t("configuration")} {/* "Settings" in EN, "Configuration" in FR */}
+</Link>
+```
+
+## Accessibility
+
+Icons must be accompanied by text labels (never icon-only links in main navigation) for better accessibility and user understanding.
+
+## Examples
+
+### Complete Header Example
+
+```typescript
+"use client";
+
+import { Home, LayoutDashboard, Settings, CreditCard, Menu } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
+
+export function Header() {
+  const t = useTranslations("Header");
+
+  return (
+    <header>
+      {/* Desktop Navigation */}
+      <nav className="hidden md:flex">
+        <Link href="/">
+          <Home className="w-4 h-4 mr-2" />
+          {t("home")}
+        </Link>
+        <Link href="/dashboard">
+          <LayoutDashboard className="w-4 h-4 mr-2" />
+          {t("dashboard")}
+        </Link>
+        <Link href="/credits">
+          <CreditCard className="w-4 h-4 mr-2" />
+          {t("credits")}
+        </Link>
+        <Link href="/configuration">
+          <Settings className="w-4 h-4 mr-2" />
+          {t("configuration")}
+        </Link>
+      </nav>
+
+      {/* Mobile Navigation */}
+      <DropdownMenu>
+        <DropdownMenuTrigger className="md:hidden">
+          <Menu className="h-6 w-6" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>
+            <Home className="w-4 h-4 mr-2" />
+            {t("home")}
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <LayoutDashboard className="w-4 h-4 mr-2" />
+            {t("dashboard")}
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <CreditCard className="w-4 h-4 mr-2" />
+            {t("credits")}
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Settings className="w-4 h-4 mr-2" />
+            {t("configuration")}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </header>
+  );
+}
+```
+
+## Quick Reference
+
+When adding a new navigation link:
+1. Identify the label/purpose
+2. Choose appropriate icon from lucide-react (refer to table above)
+3. Import the icon component
+4. Add icon before the text with `w-4 h-4 mr-2` classes
+5. Ensure consistency across header, footer, and mobile menu

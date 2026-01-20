@@ -3,7 +3,8 @@
     "title": "Flashy Cardy App",
     "signIn": "Sign In",
     "signUp": "Sign Up",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "configuration": "Settings"
   },
   "Home": {
     "title": "FlashyCardy",
@@ -37,6 +38,21 @@
     "teamContent": "This application was developed by [Your Name/Team Name]. [You can replace this text with your own content later]",
     "technologiesTitle": "Technologies Used",
     "footer": "© 2026 FlashyCardy. All rights reserved."
+  },
+  "Configuration": {
+    "title": "Settings",
+    "description": "Manage your application settings and preferences",
+    "testData": {
+      "title": "Test Data",
+      "description": "Load sample flashcard decks for testing purposes",
+      "loadButton": "Load Test Data",
+      "loadingButton": "Loading...",
+      "warning": "Warning: This will delete all your existing decks and cards and replace them with sample data.",
+      "successTitle": "Test Data Loaded Successfully",
+      "successMessage": "Created {decksCount} decks with {cardsCount} cards",
+      "errorTitle": "Error",
+      "errorMessage": "Failed to load test data. Please try again."
+    }
   }
 }
 

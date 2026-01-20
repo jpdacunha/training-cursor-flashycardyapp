@@ -3,7 +3,8 @@
     "title": "Flashy Cardy App",
     "signIn": "Se connecter",
     "signUp": "S'inscrire",
-    "dashboard": "Tableau de bord"
+    "dashboard": "Tableau de bord",
+    "configuration": "Configuration"
   },
   "Home": {
     "title": "FlashyCardy",
@@ -37,6 +38,21 @@
     "teamContent": "Cette application a été développée par [Votre nom/Nom de l'équipe]. [Vous pourrez remplacer ce texte par votre propre contenu plus tard]",
     "technologiesTitle": "Technologies utilisées",
     "footer": "© 2026 FlashyCardy. Tous droits réservés."
+  },
+  "Configuration": {
+    "title": "Configuration",
+    "description": "Gérez vos paramètres et préférences de l'application",
+    "testData": {
+      "title": "Données de test",
+      "description": "Charger des paquets de cartes d'exemple à des fins de test",
+      "loadButton": "Charger les données de test",
+      "loadingButton": "Chargement...",
+      "warning": "Attention : Cela supprimera tous vos paquets et cartes existants et les remplacera par des données d'exemple.",
+      "successTitle": "Données de test chargées avec succès",
+      "successMessage": "{decksCount} paquets créés avec {cardsCount} cartes",
+      "errorTitle": "Erreur",
+      "errorMessage": "Échec du chargement des données de test. Veuillez réessayer."
+    }
   }
 }
 

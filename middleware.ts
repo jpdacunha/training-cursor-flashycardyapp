@@ -10,8 +10,6 @@ const isPublicRoute = createRouteMatcher([
   "/:locale/sign-in(.*)",
   "/:locale/sign-up(.*)",
   "/:locale/credits",
-  "/:locale/dashboard",
-  "/dashboard",
 ]);
 
 export default clerkMiddleware(
