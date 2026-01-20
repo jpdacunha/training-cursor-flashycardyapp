@@ -28,6 +28,44 @@ All markdown documentation files must be stored in the `documentation/` director
 3. **Maintain accuracy**: Keep documentation synchronized with the actual implementation
 4. **Update references**: If adding new documentation files, update [README.md](mdc:README.md) to reference them
 
+## Documentation Philosophy: Current State Only
+
+**IMPORTANT**: Documentation must reflect **only the current state** of the application, not the history of changes.
+
+### DO ✅
+
+- **Replace outdated information** with current implementation details
+- **Update documentation** to match the new code after refactoring
+- **Describe how the application works now**, not how it used to work
+- **Keep documentation concise** and focused on current functionality
+
+### DON'T ❌
+
+- **Don't track change history** in documentation files (use git for version history)
+- **Don't add "Previously..." or "Old implementation..."** sections
+- **Don't document refactoring steps** or migration paths
+- **Don't maintain changelog-style documentation** in technical documentation files
+- **Don't keep deprecated code examples** or outdated architectural descriptions
+
+### Example
+
+When refactoring database queries to use `db/queries` helpers:
+
+```markdown
+❌ WRONG - Documenting history:
+## Database Queries
+
+Previously, we used direct Drizzle queries in components. After refactoring,
+we now use helper functions in db/queries/...
+
+✅ CORRECT - Current state only:
+## Database Queries
+
+All database operations use helper functions located in db/queries/...
+```
+
+**Note**: If historical information is critical for understanding the project's evolution, maintain it in git commit messages or a separate `CHANGELOG.md` file, not in technical documentation.
+
 ## README.md Structure
 
 The [README.md](mdc:README.md) file at the project root serves as the main entry point and must include:
