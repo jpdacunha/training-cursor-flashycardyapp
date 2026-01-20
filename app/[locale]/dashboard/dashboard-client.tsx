@@ -1,6 +1,13 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 type Deck = {
   id: number;
@@ -27,15 +34,12 @@ export default function DashboardClient({ decks }: { decks: Deck[] }) {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {decks.map((deck) => (
-              <div
-                key={deck.id}
-                className="border rounded-lg p-6 hover:shadow-lg transition-shadow"
-              >
-                <h3 className="text-xl font-semibold mb-2">{deck.title}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {deck.description}
-                </p>
-              </div>
+              <Card key={deck.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle>{deck.title}</CardTitle>
+                  <CardDescription>{deck.description}</CardDescription>
+                </CardHeader>
+              </Card>
             ))}
           </div>
         )}

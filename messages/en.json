@@ -19,6 +19,22 @@
   },
   "LanguageSwitcher": {
     "selectLanguage": "Select language"
+  },
+  "Footer": {
+    "copyright": "FlashyCardy. All rights reserved.",
+    "credits": "Credits"
+  },
+  "Credits": {
+    "title": "Credits",
+    "description": "About the creators and purpose of this application",
+    "aboutTitle": "About This Application",
+    "aboutContent": "This is a flashcard application designed to help users learn and memorize information effectively. [You can replace this text with your own content later]",
+    "purposeTitle": "Purpose",
+    "purposeContent": "The purpose of this application is to provide an intuitive and modern platform for creating and studying flashcards. [You can replace this text with your own content later]",
+    "teamTitle": "Development Team",
+    "teamContent": "This application was developed by [Your Name/Team Name]. [You can replace this text with your own content later]",
+    "technologiesTitle": "Technologies Used",
+    "footer": "© 2026 FlashyCardy. All rights reserved."
   }
 }
 

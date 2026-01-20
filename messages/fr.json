@@ -19,6 +19,22 @@
   },
   "LanguageSwitcher": {
     "selectLanguage": "Sélectionner la langue"
+  },
+  "Footer": {
+    "copyright": "FlashyCardy. Tous droits réservés.",
+    "credits": "Crédits"
+  },
+  "Credits": {
+    "title": "Crédits",
+    "description": "À propos des créateurs et du but de cette application",
+    "aboutTitle": "À propos de cette application",
+    "aboutContent": "Il s'agit d'une application de cartes mémoire conçue pour aider les utilisateurs à apprendre et mémoriser des informations efficacement. [Vous pourrez remplacer ce texte par votre propre contenu plus tard]",
+    "purposeTitle": "Objectif",
+    "purposeContent": "L'objectif de cette application est de fournir une plateforme intuitive et moderne pour créer et étudier des cartes mémoire. [Vous pourrez remplacer ce texte par votre propre contenu plus tard]",
+    "teamTitle": "Équipe de développement",
+    "teamContent": "Cette application a été développée par [Votre nom/Nom de l'équipe]. [Vous pourrez remplacer ce texte par votre propre contenu plus tard]",
+    "technologiesTitle": "Technologies utilisées",
+    "footer": "© 2026 FlashyCardy. Tous droits réservés."
   }
 }
 

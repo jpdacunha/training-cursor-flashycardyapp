@@ -6,6 +6,7 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -30,11 +31,12 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <div lang={locale} className={poppins.variable}>
+    <div lang={locale} className={`${poppins.variable} flex min-h-screen flex-col`}>
       <NextIntlClientProvider messages={messages}>
         <ClerkProvider appearance={{ baseTheme: dark }}>
           <Header />
-          {children}
+          <main className="flex-1">{children}</main>
+          <Footer />
         </ClerkProvider>
       </NextIntlClientProvider>
     </div>
