@@ -2,13 +2,20 @@
   "Layout": {
     "title": "Flashy Cardy App",
     "signIn": "Se connecter",
-    "signUp": "S'inscrire"
+    "signUp": "S'inscrire",
+    "dashboard": "Tableau de bord"
   },
   "Home": {
-    "title": "Pour commencer, modifiez le fichier page.tsx.",
-    "description": "Vous cherchez un point de départ ou plus d'instructions ? Consultez les <templates>Modèles</templates> ou le centre d'<learning>Apprentissage</learning>.",
-    "deployNow": "Déployer maintenant",
-    "documentation": "Documentation"
+    "title": "FlashyCardy",
+    "subtitle": "Votre plateforme de gestion de cartes personnelle",
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter"
+  },
+  "Dashboard": {
+    "title": "Tableau de bord",
+    "description": "Gérez vos paquets de cartes et votre progression d'apprentissage",
+    "myDecks": "Mes paquets",
+    "noDecks": "Vous n'avez pas encore de paquets. Créez votre premier paquet pour commencer !"
   },
   "LanguageSwitcher": {
     "selectLanguage": "Sélectionner la langue"

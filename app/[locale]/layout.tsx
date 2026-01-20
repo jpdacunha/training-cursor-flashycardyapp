@@ -30,16 +30,14 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className="dark">
-      <body className={`${poppins.variable} antialiased`}>
-        <NextIntlClientProvider messages={messages}>
-          <ClerkProvider appearance={{ baseTheme: dark }}>
-            <Header />
-            {children}
-          </ClerkProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <div lang={locale} className={poppins.variable}>
+      <NextIntlClientProvider messages={messages}>
+        <ClerkProvider appearance={{ baseTheme: dark }}>
+          <Header />
+          {children}
+        </ClerkProvider>
+      </NextIntlClientProvider>
+    </div>
   );
 }
 

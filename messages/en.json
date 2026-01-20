@@ -2,13 +2,20 @@
   "Layout": {
     "title": "Flashy Cardy App",
     "signIn": "Sign In",
-    "signUp": "Sign Up"
+    "signUp": "Sign Up",
+    "dashboard": "Dashboard"
   },
   "Home": {
-    "title": "To get started, edit the page.tsx file.",
-    "description": "Looking for a starting point or more instructions? Head over to <templates>Templates</templates> or the <learning>Learning</learning> center.",
-    "deployNow": "Deploy Now",
-    "documentation": "Documentation"
+    "title": "FlashyCardy",
+    "subtitle": "Your personal card management platform",
+    "signIn": "Sign In",
+    "signOut": "Sign Out"
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "description": "Manage your flashcard decks and study progress",
+    "myDecks": "My Decks",
+    "noDecks": "You don't have any decks yet. Create your first deck to get started!"
   },
   "LanguageSwitcher": {
     "selectLanguage": "Select language"

@@ -1,0 +1,288 @@
+---
+alwaysApply: true
+description: Guidelines for database interactions using Drizzle ORM
+---
+
+# Database Interactions with Drizzle ORM
+
+## Core Principle
+
+**ALL database interactions MUST use Drizzle ORM** with the schema and queries defined in the project. Never use raw SQL queries or other database libraries.
+
+## Schema Definition
+
+The database schema is defined in [src/db/schema.ts](mdc:src/db/schema.ts) and includes:
+
+- **decksTable**: Stores flashcard decks associated with users (via Clerk userId)
+- **cardsTable**: Stores individual flashcards within decks (with cascade delete)
+
+## Database Connection
+
+The database connection is configured in [lib/db.ts](mdc:lib/db.ts). Always import the `db` instance from this file:
+
+```typescript
+import { db } from '@/lib/db';
+```
+
+## Query Patterns
+
+### SELECT Queries
+
+```typescript
+import { db } from '@/lib/db';
+import { decksTable, cardsTable } from '@/src/db/schema';
+import { eq, and, desc } from 'drizzle-orm';
+
+// Select all decks for a user
+const userDecks = await db
+  .select()
+  .from(decksTable)
+  .where(eq(decksTable.userId, userId));
+
+// Select a specific deck
+const deck = await db
+  .select()
+  .from(decksTable)
+  .where(eq(decksTable.id, deckId))
+  .limit(1);
+
+// Select cards for a deck
+const cards = await db
+  .select()
+  .from(cardsTable)
+  .where(eq(cardsTable.deckId, deckId))
+  .orderBy(desc(cardsTable.createdAt));
+
+// Complex queries with multiple conditions
+const filteredDecks = await db
+  .select()
+  .from(decksTable)
+  .where(
+    and(
+      eq(decksTable.userId, userId),
+      eq(decksTable.id, deckId)
+    )
+  );
+```
+
+### INSERT Queries
+
+```typescript
+import { db } from '@/lib/db';
+import { decksTable, cardsTable } from '@/src/db/schema';
+
+// Insert a new deck
+const [newDeck] = await db
+  .insert(decksTable)
+  .values({
+    userId: userId,
+    title: 'My Deck',
+    description: 'Deck description',
+  })
+  .returning();
+
+// Insert a new card
+const [newCard] = await db
+  .insert(cardsTable)
+  .values({
+    deckId: deckId,
+    front: 'Question',
+    back: 'Answer',
+  })
+  .returning();
+
+// Bulk insert
+await db.insert(cardsTable).values([
+  { deckId, front: 'Q1', back: 'A1' },
+  { deckId, front: 'Q2', back: 'A2' },
+]);
+```
+
+### UPDATE Queries
+
+```typescript
+import { db } from '@/lib/db';
+import { decksTable, cardsTable } from '@/src/db/schema';
+import { eq } from 'drizzle-orm';
+
+// Update a deck
+await db
+  .update(decksTable)
+  .set({
+    title: 'Updated Title',
+    description: 'Updated description',
+    updatedAt: new Date(),
+  })
+  .where(eq(decksTable.id, deckId));
+
+// Update a card
+await db
+  .update(cardsTable)
+  .set({
+    front: 'Updated question',
+    back: 'Updated answer',
+    updatedAt: new Date(),
+  })
+  .where(eq(cardsTable.id, cardId));
+```
+
+### DELETE Queries
+
+```typescript
+import { db } from '@/lib/db';
+import { decksTable, cardsTable } from '@/src/db/schema';
+import { eq } from 'drizzle-orm';
+
+// Delete a deck (cascade deletes associated cards)
+await db
+  .delete(decksTable)
+  .where(eq(decksTable.id, deckId));
+
+// Delete a card
+await db
+  .delete(cardsTable)
+  .where(eq(cardsTable.id, cardId));
+
+// Delete multiple cards
+await db
+  .delete(cardsTable)
+  .where(eq(cardsTable.deckId, deckId));
+```
+
+## Common Drizzle Operators
+
+Import operators from `drizzle-orm`:
+
+```typescript
+import { 
+  eq,        // Equal: eq(column, value)
+  ne,        // Not equal: ne(column, value)
+  gt,        // Greater than: gt(column, value)
+  gte,       // Greater than or equal: gte(column, value)
+  lt,        // Less than: lt(column, value)
+  lte,       // Less than or equal: lte(column, value)
+  and,       // AND condition: and(cond1, cond2)
+  or,        // OR condition: or(cond1, cond2)
+  like,      // LIKE pattern: like(column, '%pattern%')
+  ilike,     // Case-insensitive LIKE: ilike(column, '%pattern%')
+  inArray,   // IN array: inArray(column, [val1, val2])
+  notInArray, // NOT IN array: notInArray(column, [val1, val2])
+  isNull,    // IS NULL: isNull(column)
+  isNotNull, // IS NOT NULL: isNotNull(column)
+  desc,      // Order descending: orderBy(desc(column))
+  asc,       // Order ascending: orderBy(asc(column))
+} from 'drizzle-orm';
+```
+
+## Joins
+
+```typescript
+import { db } from '@/lib/db';
+import { decksTable, cardsTable } from '@/src/db/schema';
+import { eq } from 'drizzle-orm';
+
+// Join decks with their cards
+const decksWithCards = await db
+  .select()
+  .from(decksTable)
+  .leftJoin(cardsTable, eq(decksTable.id, cardsTable.deckId))
+  .where(eq(decksTable.userId, userId));
+```
+
+## Best Practices
+
+### DO ✅
+
+1. **Always use prepared statements** (Drizzle handles this automatically)
+2. **Use TypeScript types** - Drizzle provides full type safety
+3. **Use `.returning()`** to get inserted/updated data in one query
+4. **Leverage cascade deletes** defined in the schema
+5. **Use transactions** for multi-step operations:
+
+```typescript
+await db.transaction(async (tx) => {
+  const [deck] = await tx.insert(decksTable).values({ ... }).returning();
+  await tx.insert(cardsTable).values({ deckId: deck.id, ... });
+});
+```
+
+6. **Handle timestamps** - Use `defaultNow()` in schema and update `updatedAt` manually
+7. **Use service files** - Create database operations in [lib/](mdc:lib) service files
+
+### DON'T ❌
+
+1. **Never use raw SQL** unless absolutely necessary
+2. **Don't construct queries with string concatenation**
+3. **Don't forget error handling**:
+
+```typescript
+try {
+  const result = await db.select().from(decksTable);
+  return result;
+} catch (error) {
+  console.error('Database error:', error);
+  throw new Error('Failed to fetch decks');
+}
+```
+
+4. **Don't forget to validate userId** - Always check Clerk auth before database operations
+5. **Don't expose internal IDs** in API responses without validation
+
+## API Routes Pattern
+
+In Next.js API routes:
+
+```typescript
+import { auth } from '@clerk/nextjs/server';
+import { db } from '@/lib/db';
+import { decksTable } from '@/src/db/schema';
+import { eq } from 'drizzle-orm';
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  try {
+    const { userId } = await auth();
+    
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const decks = await db
+      .select()
+      .from(decksTable)
+      .where(eq(decksTable.userId, userId));
+
+    return NextResponse.json({ decks });
+  } catch (error) {
+    console.error('Error fetching decks:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+## Migrations
+
+When modifying the schema in [src/db/schema.ts](mdc:src/db/schema.ts):
+
+1. **Update the schema file**
+2. **Generate migration**:
+   ```bash
+   npm run db:generate
+   ```
+3. **Apply migration**:
+   ```bash
+   npm run db:migrate
+   ```
+4. **Push directly to dev** (if using Drizzle Studio):
+   ```bash
+   npm run db:push
+   ```
+
+## Resources
+
+- Drizzle ORM Documentation: https://orm.drizzle.team/docs/overview
+- Drizzle Queries: https://orm.drizzle.team/docs/queries
+- Drizzle with PostgreSQL: https://orm.drizzle.team/docs/get-started-postgresql

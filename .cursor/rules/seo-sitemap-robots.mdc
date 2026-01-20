@@ -1,0 +1,139 @@
+---
+alwaysApply: true
+description: Maintain robots.txt and sitemap.xml when code changes
+---
+
+# SEO Files Maintenance
+
+## Core Principle
+
+**Always keep robots.txt and sitemap.xml up to date** whenever routes, pages, or content structure changes in the application.
+
+## When to Update
+
+Update these files whenever you:
+
+- Add new routes or pages
+- Remove existing routes or pages
+- Change route paths or URL structure
+- Modify dynamic routes
+- Add or remove locale support
+- Change page visibility (public vs authenticated)
+- Modify content that affects SEO
+
+## robots.txt Guidelines
+
+### Location
+Place in public/robots.txt (Next.js serves files from public/ at root)
+
+### Basic Structure
+
+```txt
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow private/auth routes
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard/
+
+# Sitemap location
+Sitemap: https://yourdomain.com/sitemap.xml
+```
+
+### Best Practices
+
+1. **Allow public pages** - Let search engines index your main content
+2. **Block sensitive routes** - Disallow API routes, admin panels, user dashboards
+3. **Block auth-only pages** - Disallow routes requiring authentication
+4. **Reference sitemap** - Always include sitemap URL
+5. **Test regularly** - Verify robots.txt is accessible at /robots.txt
+
+## sitemap.xml Guidelines
+
+### Location
+For Next.js App Router, create app/sitemap.ts or place static file in public/sitemap.xml
+
+### Dynamic Sitemap (Recommended)
+
+Create app/sitemap.ts:
+
+```typescript
+import { MetadataRoute } from 'next';
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://yourdomain.com';
+  
+  const routes = ['', '/about', '/contact'].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: 'daily' as const,
+    priority: route === '' ? 1 : 0.8,
+  }));
+
+  return routes;
+}
+```
+
+### With Locales
+
+```typescript
+import { MetadataRoute } from 'next';
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://yourdomain.com';
+  const locales = ['en', 'fr'];
+  
+  const routes = locales.flatMap((locale) =>
+    ['', '/about', '/contact'].map((route) => ({
+      url: `${baseUrl}/${locale}${route}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: route === '' ? 1 : 0.8,
+    }))
+  );
+
+  return routes;
+}
+```
+
+### Best Practices
+
+1. **Include all public pages** - List every page you want indexed
+2. **Update lastmod dates** - Keep modification dates current
+3. **Set priorities** - Homepage = 1.0, important pages = 0.8, others = 0.5-0.6
+4. **Use changefreq wisely** - daily, weekly, monthly, yearly
+5. **Exclude private content** - Don't include auth-required pages
+6. **Test accessibility** - Verify sitemap is accessible at /sitemap.xml
+
+## Workflow Checklist
+
+When adding/modifying routes:
+
+- [ ] Identify if route is public or private
+- [ ] Update robots.txt to allow/disallow the route
+- [ ] Add public routes to sitemap
+- [ ] Update lastmod dates for affected routes
+- [ ] Set appropriate priority and changefreq
+- [ ] Test that both files are accessible
+- [ ] Verify no sensitive routes are exposed
+
+## Testing
+
+```bash
+# Test robots.txt
+curl http://localhost:3000/robots.txt
+
+# Test sitemap.xml
+curl http://localhost:3000/sitemap.xml
+```
+
+## Common Mistakes to Avoid
+
+- Don't expose private routes in sitemap
+- Don't forget locale variants for i18n apps
+- Don't use relative URLs in sitemap (must be absolute)
+- Don't block important pages in robots.txt
+- Don't forget to update lastmod dates
+- Don't include duplicate URLs in sitemap
