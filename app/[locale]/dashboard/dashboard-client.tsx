@@ -1,25 +1,24 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { Calendar } from "lucide-react";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { InferSelectModel } from "drizzle-orm";
+import { decksTable } from "@/db/schema";
 
-type Deck = {
-  id: number;
-  title: string;
-  description: string;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
+type Deck = InferSelectModel<typeof decksTable>;
 
 export default function DashboardClient({ decks }: { decks: Deck[] }) {
   const t = useTranslations("Dashboard");
+  const locale = useLocale();
 
   return (
     <div>
@@ -37,10 +36,24 @@ export default function DashboardClient({ decks }: { decks: Deck[] }) {
               <Card key={deck.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <CardTitle>{deck.title}</CardTitle>
-                  <CardDescription>{deck.description}</CardDescription>
+                  <CardDescription>{deck.description || ''}</CardDescription>
                 </CardHeader>
+                <Separator />
+                <CardFooter className="flex justify-between text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    <span className="font-medium">{t("createdAt")}:</span>
+                    <span>{new Date(deck.createdAt).toLocaleDateString(locale)}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    <span className="font-medium">{t("updatedAt")}:</span>
+                    <span>{new Date(deck.updatedAt).toLocaleDateString(locale)}</span>
+                  </div>
+                </CardFooter>
               </Card>
             ))}
+
           </div>
         )}
       </div>

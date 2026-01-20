@@ -229,7 +229,7 @@ export default async function DashboardPage() {
   const { userId } = await auth();
   
   if (!userId) {
-    redirect('/sign-in');
+    redirect('/'); // Redirect to homepage where sign-in/sign-up buttons are located
   }
   
   // ✅ CORRECT: Filter by userId

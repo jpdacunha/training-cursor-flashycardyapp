@@ -15,10 +15,17 @@ Drizzle ORM has been successfully installed in this project with the following p
 ```
 📦 project root
 ├ 📂 drizzle/              # Generated SQL migrations
-├ 📂 src/
-│  ├ 📂 db/
-│  │  └ 📜 schema.ts       # Table definitions (decks & cards)
-│  └ 📜 index.ts           # Test script
+├ 📂 db/
+│  ├ 📜 schema.ts          # Table definitions (decks & cards)
+│  ├ 📂 queries/           # Database query helpers
+│  │  ├ 📜 card-queries.ts
+│  │  └ 📜 deck-queries.ts
+│  └ 📂 test/              # Database tests
+│     ├ 📜 card-queries.test.ts
+│     ├ 📜 deck-queries.test.ts
+│     ├ 📜 test-data.ts
+│     ├ 📜 test-data.test.ts
+│     └ 📜 test-utils.ts
 ├ 📂 lib/
 │  └ 📜 db.ts              # Reusable Drizzle instance
 ├ 📂 app/
@@ -57,7 +64,7 @@ The `lib/db.ts` file exports a reusable Drizzle instance:
 
 ```typescript
 import { db } from '@/lib/db';
-import { decksTable, cardsTable } from '@/src/db/schema';
+import { decksTable, cardsTable } from '@/db/schema';
 
 // Retrieve decks
 const decks = await db.select().from(decksTable);
@@ -66,12 +73,12 @@ const decks = await db.select().from(decksTable);
 const cards = await db.select().from(cardsTable).where(eq(cardsTable.deckId, deckId));
 ```
 
-### 2. Test Script
+### 2. Run Tests
 
-Execute the CRUD test script:
+Execute the database tests:
 
 ```bash
-npx tsx src/index.ts
+npm test
 ```
 
 ## 🚀 Drizzle Kit Commands

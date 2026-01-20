@@ -1,9 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { db } from "@/lib/db";
-import { decksTable } from "@/src/db/schema";
-import { eq } from "drizzle-orm";
+import { getUserDecks } from "@/db/queries/deck-queries";
 import DashboardClient from "./dashboard-client";
 
 export async function generateMetadata({ params }: { params: { locale: string } }) {
@@ -20,14 +18,11 @@ export default async function DashboardPage() {
   const { userId } = await auth();
 
   if (!userId) {
-    redirect("/sign-in");
+    redirect("/");
   }
 
-  // Fetch user's decks from database
-  const decks = await db
-    .select()
-    .from(decksTable)
-    .where(eq(decksTable.userId, userId));
+  // Fetch user's decks using query helper
+  const decks = await getUserDecks(userId);
 
   return (
     <div className="container mx-auto px-4 py-8">

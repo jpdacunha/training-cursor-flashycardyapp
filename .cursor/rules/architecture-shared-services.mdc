@@ -35,7 +35,7 @@ Before generating any code, **ALWAYS**:
 ```typescript
 // lib/deck-service.ts - Deck-specific business logic
 import { db } from './db';
-import { decksTable } from '@/src/db/schema';
+import { decksTable } from '@/db/schema';
 
 export async function getUserDecks(userId: string) {
   return await db.select().from(decksTable).where(eq(decksTable.userId, userId));
@@ -49,7 +49,7 @@ export async function createDeck(userId: string, title: string, description?: st
 ```typescript
 // lib/card-service.ts - Card-specific business logic
 import { db } from './db';
-import { cardsTable } from '@/src/db/schema';
+import { cardsTable } from '@/db/schema';
 
 export async function getDeckCards(deckId: number) {
   return await db.select().from(cardsTable).where(eq(cardsTable.deckId, deckId));

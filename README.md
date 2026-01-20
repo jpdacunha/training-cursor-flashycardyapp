@@ -22,6 +22,17 @@ FlashyCardyApp is a web-based flashcard application designed to help users creat
 ├── 📂 components/               # React components
 │   ├── 📂 ui/                   # shadcn/ui components
 │   └── language-switcher.tsx    # Language selection component
+├── 📂 db/                       # Database layer
+│   ├── schema.ts                # Table definitions (decks & cards)
+│   ├── 📂 queries/              # Database query helpers
+│   │   ├── card-queries.ts      # Card-related queries
+│   │   └── deck-queries.ts      # Deck-related queries
+│   └── 📂 test/                 # Database tests
+│       ├── card-queries.test.ts # Card query tests
+│       ├── deck-queries.test.ts # Deck query tests
+│       ├── test-data.ts         # Reusable test datasets
+│       ├── test-data.test.ts    # Test data validation
+│       └── test-utils.ts        # Test utilities
 ├── 📂 documentation/            # Project documentation
 │   ├── database.md              # Database and ORM guide
 │   ├── internationalization.md  # i18n setup and usage
@@ -36,10 +47,6 @@ FlashyCardyApp is a web-based flashcard application designed to help users creat
 ├── 📂 messages/                 # Translation files
 │   ├── en.json                  # English translations
 │   └── fr.json                  # French translations
-├── 📂 src/                      # Source code
-│   ├── 📂 db/                   # Database schemas
-│   │   └── schema.ts            # Table definitions
-│   └── index.ts                 # Entry point
 └── 📜 README.md                 # This file
 ```
 
@@ -199,6 +206,7 @@ Detailed documentation is available in the `documentation/` directory:
 - [**Database Guide**](documentation/database.md) - Complete guide to Drizzle ORM setup, schema definitions, database operations, and migration management
 - [**Internationalization**](documentation/internationalization.md) - i18n setup, adding languages, translation management, and usage patterns
 - [**Testing Documentation**](documentation/testing.md) - Testing strategy, test suite structure, running tests, and adding new tests
+- [**Database Test Data**](src/db/README.md) - Reusable test datasets, query helpers, and database testing guide
 
 ## 🤝 Contributing
 

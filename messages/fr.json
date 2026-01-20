@@ -15,7 +15,9 @@
     "title": "Tableau de bord",
     "description": "Gérez vos paquets de cartes et votre progression d'apprentissage",
     "myDecks": "Mes paquets",
-    "noDecks": "Vous n'avez pas encore de paquets. Créez votre premier paquet pour commencer !"
+    "noDecks": "Vous n'avez pas encore de paquets. Créez votre premier paquet pour commencer !",
+    "createdAt": "Créé le",
+    "updatedAt": "Modifié le"
   },
   "LanguageSwitcher": {
     "selectLanguage": "Sélectionner la langue"
