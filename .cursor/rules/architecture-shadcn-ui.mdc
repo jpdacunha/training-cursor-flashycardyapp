@@ -37,21 +37,111 @@ If shadcn/ui is not initialized in the project, use:
 npx shadcn@latest init -d
 ```
 
-## Guidelines
+## STRICT USAGE POLICY
 
-1. **Always use shadcn/ui components** for UI elements instead of building custom components from scratch
-2. **Use the `cn()` utility** from [lib/utils.ts](mdc:lib/utils.ts) for conditional class merging
-3. **Follow the component patterns** established by shadcn/ui for consistency
-4. **Leverage Tailwind CSS** for styling customizations
-5. **Use lucide-react icons** for all iconography needs
+**CRITICAL RULE: ABSOLUTELY NO CUSTOM UI COMPONENTS ALLOWED**
+
+This project **EXCLUSIVELY** uses shadcn/ui components for ALL UI elements. You must **NEVER** create custom UI components from scratch.
+
+### DO ✅
+
+- **ALWAYS** use shadcn/ui components for every UI element
+- **ALWAYS** check if a shadcn/ui component exists before writing any UI code
+- **ALWAYS** add missing shadcn/ui components using `npx shadcn@latest add <component-name>`
+- **ALWAYS** use the `cn()` utility from [lib/utils.ts](mdc:lib/utils.ts) for conditional class merging
+- **ALWAYS** use lucide-react icons for all iconography needs
+- **ALWAYS** leverage Tailwind CSS for styling customizations of shadcn/ui components
+
+### DON'T ❌
+
+- **NEVER** create custom UI components (buttons, inputs, cards, modals, etc.)
+- **NEVER** write custom styled divs when a shadcn/ui component exists
+- **NEVER** build forms without using shadcn/ui form components
+- **NEVER** create custom dialogs, modals, or overlays - use shadcn/ui Dialog, Sheet, or Popover
+- **NEVER** bypass shadcn/ui by creating "simple" custom components
+
+## Clerk Integration Requirements
+
+### Authentication UI Components
+
+When integrating Clerk authentication, you **MUST** follow these rules:
+
+1. **Sign In/Sign Up Buttons**: Use shadcn/ui Button components
+   ```typescript
+   import { Button } from "@/components/ui/button";
+   
+   // ✅ CORRECT
+   <Button onClick={() => openSignInModal()}>Sign In</Button>
+   <Button onClick={() => openSignUpModal()}>Sign Up</Button>
+   ```
+
+2. **Authentication Modals**: Use shadcn/ui Dialog component for sign-in and sign-up
+   ```typescript
+   import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+   import { SignIn, SignUp } from "@clerk/nextjs";
+   
+   // ✅ CORRECT: Clerk forms in shadcn/ui Dialog
+   <Dialog>
+     <DialogTrigger asChild>
+       <Button>Sign In</Button>
+     </DialogTrigger>
+     <DialogContent>
+       <SignIn />
+     </DialogContent>
+   </Dialog>
+   ```
+
+3. **DO NOT** use Clerk's default UI components standalone:
+   ```typescript
+   // ❌ WRONG: Clerk components without shadcn/ui wrapper
+   <SignInButton mode="modal" />
+   
+   // ✅ CORRECT: shadcn/ui Button with Clerk Dialog
+   <Dialog>
+     <DialogTrigger asChild>
+       <Button>Sign In</Button>
+     </DialogTrigger>
+     <DialogContent>
+       <SignIn />
+     </DialogContent>
+   </Dialog>
+   ```
+
+4. **User Profile/Settings**: Wrap in shadcn/ui Dialog or Sheet
+   ```typescript
+   // ✅ CORRECT
+   <Sheet>
+     <SheetTrigger asChild>
+       <Button>Profile</Button>
+     </SheetTrigger>
+     <SheetContent>
+       <UserProfile />
+     </SheetContent>
+   </Sheet>
+   ```
 
 ## Available Component Categories
 
-- Form elements (Input, Select, Checkbox, Radio, etc.)
-- Layout components (Card, Sheet, Dialog, Tabs, etc.)
-- Navigation (Navigation Menu, Breadcrumb, Pagination, etc.)
-- Feedback (Alert, Toast, Progress, Skeleton, etc.)
-- Data display (Table, Badge, Avatar, etc.)
-- Overlays (Dialog, Popover, Tooltip, etc.)
+- **Form elements**: Input, Select, Checkbox, Radio, Switch, Textarea, Label, Form
+- **Layout components**: Card, Sheet, Dialog, Tabs, Separator, Accordion
+- **Navigation**: Navigation Menu, Breadcrumb, Pagination, Menubar
+- **Feedback**: Alert, Toast, Progress, Skeleton, Spinner
+- **Data display**: Table, Badge, Avatar, Calendar, Command
+- **Overlays**: Dialog, Popover, Tooltip, Sheet, Drawer, Modal
+- **Interactive**: Button, Dropdown Menu, Context Menu, Hover Card
+
+## Before Writing Any UI Code
+
+**MANDATORY CHECKLIST:**
+
+1. [ ] Search shadcn/ui documentation for existing component
+2. [ ] If component exists, add it using `npx shadcn@latest add <component-name>`
+3. [ ] If multiple components could work, choose the most appropriate shadcn/ui component
+4. [ ] ONLY use Tailwind CSS for styling adjustments to shadcn/ui components
+5. [ ] Never create custom components - always use or compose shadcn/ui components
+
+## Reference
 
 Always check the [shadcn/ui documentation](https://ui.shadcn.com/docs/components) for the latest components and usage patterns.
+
+**Remember**: If you find yourself creating a custom UI component, STOP and find the equivalent shadcn/ui component instead.
