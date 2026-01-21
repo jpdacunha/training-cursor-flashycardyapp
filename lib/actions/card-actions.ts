@@ -1,11 +1,19 @@
 "use server";
 
 import { auth } from '@clerk/nextjs/server';
-import { getCardById, updateCardInDb } from '@/db/queries/card-queries';
+import { getCardById, updateCardInDb, createCardInDb } from '@/db/queries/card-queries';
 import { getDeckById } from '@/db/queries/deck-queries';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { buildRoute } from '@/lib/routes';
+
+const CreateCardSchema = z.object({
+  deckId: z.number().positive(),
+  front: z.string().min(1, 'Front text is required').max(5000),
+  back: z.string().min(1, 'Back text is required').max(5000),
+});
+
+type CreateCardInput = z.infer<typeof CreateCardSchema>;
 
 const UpdateCardSchema = z.object({
   cardId: z.number().positive(),
@@ -14,6 +22,49 @@ const UpdateCardSchema = z.object({
 });
 
 type UpdateCardInput = z.infer<typeof UpdateCardSchema>;
+
+/**
+ * Create a new card in a deck
+ * @param input - Deck ID and card content
+ * @returns Success response with new card or error
+ */
+export async function createCard(input: CreateCardInput) {
+  const { userId } = await auth();
+  
+  if (!userId) {
+    return { success: false, error: 'Unauthorized' };
+  }
+  
+  const validationResult = CreateCardSchema.safeParse(input);
+  
+  if (!validationResult.success) {
+    return { 
+      success: false, 
+      error: validationResult.error.flatten().fieldErrors 
+    };
+  }
+  
+  const { deckId, front, back } = validationResult.data;
+  
+  try {
+    // Verify the deck belongs to the user
+    const deck = await getDeckById(deckId, userId);
+    
+    if (!deck) {
+      return { success: false, error: 'Deck not found or unauthorized' };
+    }
+    
+    // Create the card
+    const newCard = await createCardInDb(deckId, front, back);
+    
+    revalidatePath(buildRoute.deck(deckId));
+    
+    return { success: true, data: newCard };
+  } catch (error) {
+    console.error('Error creating card:', error);
+    return { success: false, error: 'Failed to create card' };
+  }
+}
 
 /**
  * Update a card's content

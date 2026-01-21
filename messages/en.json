@@ -88,7 +88,14 @@
     "deckUpdateSuccess": "Deck updated successfully",
     "deckUpdateError": "Failed to update deck",
     "noCards": "No cards in this deck yet.",
-    "backToDashboard": "Back to Dashboard"
+    "backToDashboard": "Back to Dashboard",
+    "addCard": "Add Card",
+    "addCardTitle": "Add New Card",
+    "addCardDescription": "Create a new flashcard for this deck",
+    "createCardSuccess": "Card created successfully",
+    "createCardError": "Failed to create card",
+    "frontPlaceholder": "Enter the front side of the card (question)",
+    "backPlaceholder": "Enter the back side of the card (answer)"
   }
 }
 

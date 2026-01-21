@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { EditDeckDialog } from "@/components/edit-deck-dialog";
+import { AddCardDialog } from "@/components/add-card-dialog";
 import { Pencil, Save, X, ArrowLeft } from "lucide-react";
 import { updateCard } from "@/lib/actions/card-actions";
 import { Link } from "@/i18n/routing";
@@ -44,6 +45,11 @@ export function DeckDetailClient({ deck, cards: initialCards }: DeckDetailClient
   const [editFront, setEditFront] = useState("");
   const [editBack, setEditBack] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+
+  // Sync local state with props when they change (after router.refresh())
+  useEffect(() => {
+    setCards(initialCards);
+  }, [initialCards]);
 
   const cardCount = cards.length;
   const learningProgress = 0; // Placeholder for now
@@ -149,7 +155,10 @@ export function DeckDetailClient({ deck, cards: initialCards }: DeckDetailClient
 
       {/* Cards List */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">{t("cards")}</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold">{t("cards")}</h2>
+          <AddCardDialog deckId={deck.id} />
+        </div>
         
         {cards.length === 0 ? (
           <Card>
