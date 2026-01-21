@@ -1,7 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getDeckById } from "@/db/queries/deck-queries";
+import { getCardsByDeckId } from "@/db/queries/card-queries";
 import { DEFAULT_REDIRECTS } from "@/lib/routes";
+import { DeckDetailClient } from "./deck-detail-client";
 
 export default async function DeckDetailPage({
   params,
@@ -21,9 +23,7 @@ export default async function DeckDetailPage({
     redirect(DEFAULT_REDIRECTS.NOT_FOUND);
   }
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Empty content for now */}
-    </div>
-  );
+  const cards = await getCardsByDeckId(parseInt(deckId));
+
+  return <DeckDetailClient deck={deck} cards={cards} />;
 }

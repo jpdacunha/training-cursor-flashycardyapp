@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { Toaster } from "sonner";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -37,6 +38,7 @@ export default async function LocaleLayout({
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
+          <Toaster richColors position="top-right" />
         </ClerkProvider>
       </NextIntlClientProvider>
     </div>

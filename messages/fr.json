@@ -53,6 +53,24 @@
       "errorTitle": "Erreur",
       "errorMessage": "Échec du chargement des données de test. Veuillez réessayer."
     }
+  },
+  "DeckDetail": {
+    "deckInfo": "Informations du paquet",
+    "cardCount": "{count, plural, =0 {Aucune carte} one {# carte} other {# cartes}}",
+    "learningProgress": "Progression de l'apprentissage",
+    "progressComplete": "{progress}% complété",
+    "cards": "Cartes",
+    "cardNumber": "Carte #{number}",
+    "front": "Recto",
+    "back": "Verso",
+    "edit": "Modifier",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "editCard": "Modifier la carte",
+    "updateSuccess": "Carte mise à jour avec succès",
+    "updateError": "Échec de la mise à jour de la carte",
+    "noCards": "Aucune carte dans ce paquet pour le moment.",
+    "backToDashboard": "Retour au tableau de bord"
   }
 }
 

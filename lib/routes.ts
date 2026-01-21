@@ -29,7 +29,7 @@ export const PUBLIC_ROUTE_PATTERNS = [
   "/:locale/sign-in(.*)",
   "/:locale/sign-up(.*)",
   "/:locale/credits",
-] as const;
+];
 
 /**
  * Default redirect destinations for different scenarios

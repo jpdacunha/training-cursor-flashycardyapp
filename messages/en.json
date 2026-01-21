@@ -53,6 +53,24 @@
       "errorTitle": "Error",
       "errorMessage": "Failed to load test data. Please try again."
     }
+  },
+  "DeckDetail": {
+    "deckInfo": "Deck Information",
+    "cardCount": "{count, plural, =0 {No cards} one {# card} other {# cards}}",
+    "learningProgress": "Learning Progress",
+    "progressComplete": "{progress}% complete",
+    "cards": "Cards",
+    "cardNumber": "Card #{number}",
+    "front": "Front",
+    "back": "Back",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "editCard": "Edit Card",
+    "updateSuccess": "Card updated successfully",
+    "updateError": "Failed to update card",
+    "noCards": "No cards in this deck yet.",
+    "backToDashboard": "Back to Dashboard"
   }
 }
 
