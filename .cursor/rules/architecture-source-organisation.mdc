@@ -1,0 +1,813 @@
+---
+alwaysApply: true
+---
+
+# Source Code Organization (Enterprise-Scale Architecture)
+
+## Core Principle
+
+This project follows an **enterprise-scale architecture** designed to maintain developer productivity, build performance, and code maintainability as the codebase grows. All files must be organized according to the structure defined in this document.
+
+## Directory Structure
+
+### Primary Organization Strategy: **Domain-Driven + Feature-Based Hybrid**
+
+```
+src/
+├── @types/                          # Global TypeScript declarations
+│   ├── index.d.ts                  # Ambient declarations
+│   └── external.d.ts               # Third-party library augmentations
+│
+├── core/                           # Core business logic (domain layer)
+│   ├── domains/                    # Domain models and types
+│   │   ├── user/
+│   │   │   ├── types.ts           # User domain types
+│   │   │   ├── constants.ts       # User-related constants
+│   │   │   ├── validators.ts      # User validation logic
+│   │   │   └── utils.ts           # User utility functions
+│   │   ├── deck/
+│   │   │   ├── types.ts           # Deck domain types
+│   │   │   ├── constants.ts       # Deck-related constants
+│   │   │   └── validators.ts      # Deck validation logic
+│   │   ├── card/
+│   │   │   ├── types.ts           # Card domain types
+│   │   │   ├── constants.ts       # Card-related constants
+│   │   │   └── validators.ts      # Card validation logic
+│   │   └── ai/
+│   │       ├── types.ts           # AI/LLM domain types
+│   │       └── prompts.ts         # AI prompt templates
+│   │
+│   ├── types/                      # Cross-domain shared types
+│   │   ├── common.ts              # Common types used across domains
+│   │   ├── api.ts                 # API contract types
+│   │   ├── database.ts            # Database-related types
+│   │   ├── errors.ts              # Error types and classes
+│   │   └── index.ts               # Barrel export
+│   │
+│   └── constants/                  # Application-wide constants
+│       ├── routes.ts              # Route constants
+│       ├── config.ts              # Configuration constants
+│       └── index.ts               # Barrel export
+│
+├── features/                       # Feature modules (vertical slices)
+│   ├── authentication/
+│   │   ├── types.ts               # Feature-specific types
+│   │   ├── actions.ts             # Server actions
+│   │   ├── hooks.ts               # React hooks
+│   │   ├── components/            # Feature components
+│   │   └── utils.ts               # Feature utilities
+│   │
+│   ├── decks/
+│   │   ├── types.ts               # Deck feature types
+│   │   ├── actions.ts             # Deck server actions
+│   │   ├── queries.ts             # Deck queries
+│   │   ├── hooks/                 # React hooks
+│   │   │   ├── use-deck-list.ts
+│   │   │   └── use-deck-detail.ts
+│   │   ├── components/            # Deck-related components
+│   │   │   ├── deck-card.tsx
+│   │   │   ├── deck-list.tsx
+│   │   │   ├── add-deck-dialog.tsx
+│   │   │   └── edit-deck-dialog.tsx
+│   │   └── utils.ts               # Deck utilities
+│   │
+│   ├── cards/
+│   │   ├── types.ts               # Card feature types
+│   │   ├── actions.ts             # Card server actions
+│   │   ├── queries.ts             # Card queries
+│   │   ├── hooks/
+│   │   │   ├── use-card-list.ts
+│   │   │   └── use-card-crud.ts
+│   │   ├── components/            # Card-related components
+│   │   │   ├── card-view.tsx
+│   │   │   ├── card-editor.tsx
+│   │   │   └── add-card-dialog.tsx
+│   │   └── utils.ts               # Card utilities
+│   │
+│   ├── ai-generation/             # AI card generation feature
+│   │   ├── types.ts               # AI generation types
+│   │   ├── actions.ts             # AI generation actions
+│   │   ├── services/              # LLM service implementations
+│   │   │   ├── llm-service.ts     # Abstract service
+│   │   │   ├── gemini-service.ts  # Gemini implementation
+│   │   │   └── openai-service.ts  # OpenAI implementation
+│   │   ├── components/
+│   │   │   ├── ai-card-generator.tsx
+│   │   │   └── generation-settings.tsx
+│   │   └── utils.ts
+│   │
+│   ├── dashboard/
+│   │   ├── types.ts
+│   │   ├── hooks.ts
+│   │   ├── components/
+│   │   │   └── dashboard-client.tsx
+│   │   └── utils.ts
+│   │
+│   ├── configuration/
+│   │   ├── types.ts
+│   │   ├── actions.ts
+│   │   ├── components/
+│   │   │   └── configuration-client.tsx
+│   │   └── utils.ts
+│   │
+│   └── internationalization/
+│       ├── types.ts               # i18n types
+│       ├── config.ts              # i18n configuration
+│       ├── components/
+│       │   └── language-switcher.tsx
+│       └── utils.ts
+│
+├── infrastructure/                 # Infrastructure layer (technical concerns)
+│   ├── database/
+│   │   ├── schema/                # Database schema definitions
+│   │   │   ├── decks.ts          # Decks table schema
+│   │   │   ├── cards.ts          # Cards table schema
+│   │   │   └── index.ts          # Combined schema
+│   │   ├── migrations/           # Database migrations
+│   │   ├── connection.ts         # DB connection
+│   │   └── types.ts              # Database-specific types
+│   │
+│   ├── api/
+│   │   ├── client/               # API client utilities
+│   │   ├── middleware/           # API middleware
+│   │   └── types.ts              # API infrastructure types
+│   │
+│   ├── authentication/
+│   │   ├── clerk/                # Clerk integration
+│   │   ├── middleware.ts         # Auth middleware
+│   │   └── types.ts              # Auth types
+│   │
+│   ├── cache/
+│   │   ├── redis.ts              # Redis cache
+│   │   ├── in-memory.ts          # In-memory cache
+│   │   └── types.ts              # Cache types
+│   │
+│   └── monitoring/
+│       ├── logging.ts            # Logging utilities
+│       ├── analytics.ts          # Analytics integration
+│       └── error-tracking.ts     # Error tracking (Sentry, etc.)
+│
+├── shared/                         # Shared utilities and components
+│   ├── components/                # Shared UI components
+│   │   ├── ui/                   # shadcn/ui components
+│   │   │   ├── button.tsx
+│   │   │   ├── card.tsx
+│   │   │   ├── dialog.tsx
+│   │   │   └── ...
+│   │   ├── layout/               # Layout components
+│   │   │   ├── header.tsx
+│   │   │   ├── footer.tsx
+│   │   │   └── page-container.tsx
+│   │   └── common/               # Common components
+│   │       ├── loading.tsx
+│   │       ├── error-boundary.tsx
+│   │       └── structured-data.tsx
+│   │
+│   ├── hooks/                     # Shared React hooks
+│   │   ├── use-local-storage.ts
+│   │   ├── use-debounce.ts
+│   │   └── use-media-query.ts
+│   │
+│   ├── utils/                     # Shared utility functions
+│   │   ├── cn.ts                 # classNames utility
+│   │   ├── date.ts               # Date utilities
+│   │   ├── format.ts             # Formatting utilities
+│   │   └── validation.ts         # Validation helpers
+│   │
+│   └── types/                     # Shared utility types
+│       ├── helpers.ts            # TypeScript helper types
+│       ├── branded.ts            # Branded types for type safety
+│       └── guards.ts             # Type guards
+│
+├── app/                           # Next.js App Router (routing only)
+│   ├── layout.tsx                # Root layout
+│   ├── robots.ts                 # robots.txt
+│   ├── sitemap.ts                # sitemap.xml
+│   ├── globals.css               # Global styles
+│   │
+│   └── [locale]/                 # Locale-based routing
+│       ├── layout.tsx            # Locale layout
+│       ├── page.tsx              # Home page
+│       │
+│       ├── dashboard/
+│       │   └── page.tsx          # Dashboard route (imports from features/dashboard)
+│       │
+│       ├── decks/
+│       │   ├── page.tsx          # Decks list route
+│       │   └── [deckId]/
+│       │       └── page.tsx      # Deck detail route
+│       │
+│       ├── configuration/
+│       │   └── page.tsx          # Configuration route
+│       │
+│       └── credits/
+│           └── page.tsx          # Credits route
+│
+├── tests/                         # Test files (mirroring src structure)
+│   ├── unit/
+│   │   ├── core/
+│   │   │   └── domains/
+│   │   │       ├── deck/
+│   │   │       │   └── validators.test.ts
+│   │   │       └── card/
+│   │   │           └── validators.test.ts
+│   │   └── features/
+│   │       └── cards/
+│   │           └── actions.test.ts
+│   │
+│   ├── integration/
+│   │   ├── database/
+│   │   │   ├── deck-queries.test.ts
+│   │   │   └── card-queries.test.ts
+│   │   └── features/
+│   │       └── ai-generation/
+│   │           └── generation.test.ts
+│   │
+│   ├── e2e/
+│   │   ├── decks/
+│   │   │   └── deck-crud.spec.ts
+│   │   └── cards/
+│   │       └── card-crud.spec.ts
+│   │
+│   └── fixtures/
+│       ├── test-data.ts
+│       └── test-utils.ts
+│
+├── public/                        # Static assets
+│   ├── images/
+│   ├── fonts/
+│   └── icons/
+│
+├── docs/                          # Documentation
+│   ├── architecture/
+│   │   ├── overview.md
+│   │   ├── domain-model.md
+│   │   └── data-flow.md
+│   ├── features/
+│   │   ├── ai-card-generation.md
+│   │   └── internationalization.md
+│   ├── guides/
+│   │   ├── database.md
+│   │   ├── testing.md
+│   │   └── shadcn-ui.md
+│   └── api/
+│       └── endpoints.md
+│
+└── config/                        # Configuration files
+    ├── drizzle.config.ts
+    ├── vitest.config.ts
+    ├── tsconfig.json
+    └── eslint.config.mjs
+```
+
+## Type Organization Strategy
+
+### 1. Layered Type Architecture
+
+Types are organized in **three layers** to prevent circular dependencies and improve build performance:
+
+```
+Layer 1: Core Domain Types (core/domains/)
+         ↓ imports allowed
+Layer 2: Feature Types (features/*/types.ts)
+         ↓ imports allowed
+Layer 3: Component/UI Types (inline in components)
+```
+
+**Rule**: Higher layers can import from lower layers, but not vice versa.
+
+### 2. Type Import Patterns
+
+#### ✅ CORRECT: Use `import type` for Type-Only Imports
+
+```typescript
+// Faster build times - TypeScript can strip these at compile time
+import type { Deck, Card } from '@/core/domains/deck/types';
+import type { User } from '@/core/domains/user/types';
+
+// Only import actual implementations when needed
+import { getDeckById } from '@/features/decks/queries';
+```
+
+#### ✅ CORRECT: Barrel Exports for Type Collections
+
+```typescript
+// core/domains/index.ts
+export type { Deck, DeckStatus, DeckMetadata } from './deck/types';
+export type { Card, CardSide } from './card/types';
+export type { User, UserRole } from './user/types';
+
+// Usage:
+import type { Deck, Card, User } from '@/core/domains';
+```
+
+#### ❌ WRONG: Importing Implementation Files for Types
+
+```typescript
+// ❌ BAD: Imports entire service file just for types
+import { getDeckById } from '@/features/decks/queries';
+type DeckResult = ReturnType<typeof getDeckById>; // Forces TypeScript to parse entire file
+
+// ✅ GOOD: Import types separately
+import type { Deck } from '@/core/domains/deck/types';
+import { getDeckById } from '@/features/decks/queries';
+```
+
+### 3. Branded Types for Enterprise Type Safety
+
+Use **branded types** to prevent ID confusion at scale:
+
+```typescript
+// shared/types/branded.ts
+
+/**
+ * Branded type utilities for type-safe IDs
+ */
+export type Brand<T, TBrand extends string> = T & { readonly __brand: TBrand };
+
+// Domain-specific ID types
+export type UserId = Brand<string, 'UserId'>;
+export type DeckId = Brand<number, 'DeckId'>;
+export type CardId = Brand<number, 'CardId'>;
+export type SessionId = Brand<string, 'SessionId'>;
+
+/**
+ * Type-safe ID constructors
+ */
+export const UserId = (id: string): UserId => id as UserId;
+export const DeckId = (id: number): DeckId => id as DeckId;
+export const CardId = (id: number): CardId => id as CardId;
+
+// Usage in domain types:
+// core/domains/deck/types.ts
+import type { DeckId, UserId } from '@/shared/types/branded';
+
+export interface Deck {
+  id: DeckId;
+  userId: UserId;
+  title: string;
+  description: string;
+}
+
+// Now TypeScript prevents:
+function getDeck(id: DeckId) { ... }
+const cardId: CardId = CardId(123);
+getDeck(cardId); // ❌ Type error! Can't pass CardId where DeckId expected
+```
+
+## Feature Module Pattern (Vertical Slices)
+
+Each feature is a **self-contained vertical slice** that owns its:
+- Types
+- Server actions
+- Database queries
+- React hooks
+- Components
+- Tests
+
+### Feature Module Structure Template
+
+```
+features/[feature-name]/
+├── types.ts                    # Feature-specific types
+├── constants.ts                # Feature constants
+├── actions.ts                  # Server actions (create, update, delete)
+├── queries.ts                  # Database queries (read operations)
+├── hooks/                      # React hooks
+│   ├── use-[feature]-list.ts
+│   ├── use-[feature]-detail.ts
+│   └── use-[feature]-mutation.ts
+├── components/                 # Feature components
+│   ├── [feature]-list.tsx
+│   ├── [feature]-detail.tsx
+│   ├── [feature]-form.tsx
+│   └── [feature]-card.tsx
+├── utils.ts                    # Feature-specific utilities
+├── validators.ts               # Feature validation logic
+└── __tests__/                  # Feature tests
+    ├── actions.test.ts
+    ├── queries.test.ts
+    └── components.test.tsx
+```
+
+### Example: Decks Feature Module
+
+```
+features/decks/
+├── types.ts                    # Deck feature types
+├── actions.ts                  # createDeck, updateDeck, deleteDeck
+├── queries.ts                  # getDeckById, getUserDecks, getDeckWithCards
+├── hooks/
+│   ├── use-deck-list.ts       # Hook for deck list with loading/error states
+│   ├── use-deck-detail.ts     # Hook for single deck
+│   └── use-deck-mutations.ts  # Hook for create/update/delete
+├── components/
+│   ├── deck-list.tsx          # Deck list component
+│   ├── deck-card.tsx          # Individual deck card
+│   ├── deck-detail.tsx        # Deck detail view
+│   ├── add-deck-dialog.tsx    # Add deck dialog
+│   └── edit-deck-dialog.tsx   # Edit deck dialog
+└── utils.ts                    # Deck-specific utilities
+```
+
+## Path Aliases and Import Rules
+
+### Configured Path Aliases (tsconfig.json)
+
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "@/core/*": ["./src/core/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/infrastructure/*": ["./src/infrastructure/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/app/*": ["./src/app/*"],
+      "@/tests/*": ["./src/tests/*"]
+    }
+  }
+}
+```
+
+### Import Ordering Convention
+
+```typescript
+// 1. External dependencies
+import { z } from "zod";
+import { eq, and } from "drizzle-orm";
+
+// 2. Core domain types
+import type { Deck, DeckId } from "@/core/domains/deck/types";
+import type { UserId } from "@/core/domains/user/types";
+
+// 3. Infrastructure
+import { db } from "@/infrastructure/database/connection";
+import { decksTable } from "@/infrastructure/database/schema";
+
+// 4. Shared utilities
+import { cn } from "@/shared/utils/cn";
+
+// 5. Feature imports
+import { getDeckById } from "@/features/decks/queries";
+
+// 6. Relative imports (same feature)
+import { DeckCard } from "./components/deck-card";
+import { useDeckMutations } from "./hooks/use-deck-mutations";
+```
+
+## Build Performance Optimization
+
+### 1. TypeScript Project References
+
+For optimal build performance with many files, use TypeScript project references:
+
+```json
+// tsconfig.json (root)
+{
+  "references": [
+    { "path": "./src/core" },
+    { "path": "./src/features" },
+    { "path": "./src/infrastructure" },
+    { "path": "./src/shared" }
+  ]
+}
+
+// src/core/tsconfig.json
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "../../dist/core"
+  },
+  "include": ["./**/*"]
+}
+```
+
+**Benefits**:
+- 3-5x faster incremental builds
+- Better IDE performance
+- Parallel type checking
+
+### 2. Barrel Export Strategy
+
+Use **selective barrel exports** to avoid importing unnecessary code:
+
+```typescript
+// ✅ GOOD: Named exports in barrel file
+// features/decks/index.ts
+export { createDeck, updateDeck, deleteDeck } from './actions';
+export { getDeckById, getUserDecks } from './queries';
+export type { Deck, DeckStatus } from './types';
+
+// Usage (tree-shakeable):
+import { getDeckById } from '@/features/decks';
+
+// ❌ BAD: Export * (imports everything)
+// features/decks/index.ts
+export * from './actions';
+export * from './queries';
+export * from './types';
+```
+
+### 3. Dynamic Imports for Code Splitting
+
+For large features, use dynamic imports:
+
+```typescript
+// app/[locale]/dashboard/page.tsx
+import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
+
+// Static import for types
+import type { Deck } from '@/core/domains/deck/types';
+
+// Dynamic import for heavy component
+const DashboardClient = dynamic(
+  () => import('@/features/dashboard/components/dashboard-client'),
+  { loading: () => <DashboardSkeleton /> }
+);
+
+export default async function DashboardPage() {
+  const decks = await getUserDecks(userId);
+  
+  return (
+    <Suspense fallback={<DashboardSkeleton />}>
+      <DashboardClient decks={decks} />
+    </Suspense>
+  );
+}
+```
+
+## Dependency Rules (Prevent Circular Dependencies)
+
+### Allowed Dependencies (Top to Bottom)
+
+```
+app/              (routing layer)
+  ↓ can import
+features/         (feature modules)
+  ↓ can import
+infrastructure/   (technical services)
+  ↓ can import
+core/             (domain models)
+  ↓ can import
+shared/           (utilities)
+```
+
+### Forbidden Dependencies
+
+```
+❌ core/ cannot import from features/
+❌ core/ cannot import from infrastructure/
+❌ core/ cannot import from app/
+❌ shared/ cannot import from core/ (only types)
+❌ infrastructure/ cannot import from features/
+❌ infrastructure/ cannot import from app/
+```
+
+### Enforcing with ESLint
+
+```javascript
+// eslint.config.mjs
+export default [
+  {
+    rules: {
+      'import/no-restricted-paths': [
+        'error',
+        {
+          zones: [
+            {
+              target: './src/core',
+              from: './src/features',
+              message: 'Core cannot import from features'
+            },
+            {
+              target: './src/core',
+              from: './src/infrastructure',
+              message: 'Core cannot import from infrastructure'
+            },
+            {
+              target: './src/shared',
+              from: './src/core',
+              except: ['./src/core/types'],
+              message: 'Shared can only import types from core'
+            }
+          ]
+        }
+      ]
+    }
+  }
+];
+```
+
+## Testing Strategy
+
+### Test File Placement
+
+Tests mirror the source structure but live in `tests/` directory:
+
+```
+src/features/decks/actions.ts
+  → tests/unit/features/decks/actions.test.ts
+
+src/infrastructure/database/queries.ts
+  → tests/integration/database/queries.test.ts
+```
+
+### Test Categories
+
+1. **Unit Tests** (`tests/unit/`)
+   - Pure functions
+   - Validators
+   - Utilities
+   - No database, no external services
+
+2. **Integration Tests** (`tests/integration/`)
+   - Database queries
+   - Server actions
+   - API endpoints
+   - External service integrations
+
+3. **E2E Tests** (`tests/e2e/`)
+   - Full user workflows
+   - Browser automation
+   - Critical paths only (expensive to run)
+
+### Test Utilities Organization
+
+```
+tests/
+├── fixtures/              # Test data
+│   ├── decks.ts          # Deck test fixtures
+│   ├── cards.ts          # Card test fixtures
+│   └── users.ts          # User test fixtures
+├── mocks/                # Mock implementations
+│   ├── database.ts       # DB mocks
+│   └── llm-service.ts    # LLM service mocks
+└── utils/                # Test utilities
+    ├── setup.ts          # Test setup/teardown
+    ├── factories.ts      # Factory functions
+    └── assertions.ts     # Custom assertions
+```
+
+## Documentation Structure
+
+### Documentation Organization
+
+Documentation follows a hierarchical structure in the `docs/` directory. For detailed documentation management guidelines, maintenance practices, and file placement rules, see the [Documentation Management Guidelines](.cursor/rules/documentation-management.mdc).
+
+### Documentation Categories
+
+```
+docs/
+├── architecture/         # System design documents
+│   ├── overview.md      # High-level architecture
+│   ├── domain-model.md  # Domain model documentation
+│   ├── data-flow.md     # Data flow diagrams
+│   └── adr/             # Architecture Decision Records
+│       ├── 001-type-organization.md
+│       ├── 002-feature-modules.md
+│       └── 003-database-strategy.md
+│
+├── features/            # Feature documentation
+│   ├── ai-card-generation.md
+│   ├── internationalization.md
+│   ├── decks.md
+│   └── cards.md
+│
+├── guides/              # Developer guides
+│   ├── getting-started.md
+│   ├── adding-features.md
+│   ├── database.md
+│   ├── testing.md
+│   ├── deployment.md
+│   └── shadcn-ui.md
+│
+└── api/                 # API documentation
+    ├── server-actions.md
+    ├── database-queries.md
+    └── endpoints.md
+```
+
+**Note**: When modifying code, always update the relevant documentation. See [Documentation Management Guidelines](.cursor/rules/documentation-management.mdc) for the complete maintenance workflow.
+
+## Code Generation and Tooling
+
+### Feature Scaffolding Script
+
+Create a script to generate new features with proper structure:
+
+```bash
+# scripts/create-feature.sh
+npm run create-feature -- --name payments
+
+# Generates:
+# features/payments/
+# ├── types.ts
+# ├── actions.ts
+# ├── queries.ts
+# ├── hooks/
+# ├── components/
+# └── __tests__/
+```
+
+### Type Generation from Schema
+
+Generate TypeScript types from database schema:
+
+```bash
+npm run db:generate-types
+
+# Generates:
+# core/domains/[entity]/types.ts (from database schema)
+```
+
+## Monitoring and Observability
+
+### Structured Logging
+
+```typescript
+// infrastructure/monitoring/logging.ts
+import type { DeckId, UserId } from '@/shared/types/branded';
+
+interface LogContext {
+  userId?: UserId;
+  deckId?: DeckId;
+  feature: string;
+  action: string;
+}
+
+export function logAction(context: LogContext, message: string) {
+  console.log({
+    timestamp: new Date().toISOString(),
+    level: 'info',
+    ...context,
+    message
+  });
+}
+
+// Usage in features:
+logAction(
+  { userId, deckId, feature: 'decks', action: 'create' },
+  'Deck created successfully'
+);
+```
+
+### Performance Monitoring
+
+```typescript
+// infrastructure/monitoring/performance.ts
+export function measurePerformance<T>(
+  name: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  
+  return fn().finally(() => {
+    const duration = performance.now() - start;
+    console.log(`[Performance] ${name}: ${duration.toFixed(2)}ms`);
+  });
+}
+
+// Usage:
+const decks = await measurePerformance(
+  'getUserDecks',
+  () => getUserDecks(userId)
+);
+```
+
+## Key Principles Summary
+
+1. **Domain-Driven Organization**: Group by business domain, not technical layer
+2. **Feature Modules**: Self-contained vertical slices
+3. **Layered Types**: Core → Features → Components
+4. **Type Safety**: Branded types for IDs, strict imports
+5. **No Circular Dependencies**: Enforce with ESLint
+6. **Build Performance**: Project references, selective exports
+7. **Documentation**: Keep docs in sync with code structure
+8. **Testing**: Mirror source structure, categorize by type
+9. **Monitoring**: Structured logging, performance tracking
+
+## Quick Reference: File Location Decision Tree
+
+```
+Where should I put this file?
+
+Is it a business concept/rule?
+  → YES: core/domains/[domain]/
+
+Is it a user-facing feature?
+  → YES: features/[feature]/
+
+Is it technical infrastructure?
+  → YES: infrastructure/[service]/
+
+Is it shared across features?
+  → YES: shared/[category]/
+
+Is it a route/page?
+  → YES: app/[locale]/[route]/
+
+Is it a test?
+  → YES: tests/[unit|integration|e2e]/[mirroring-src-path]/
+```

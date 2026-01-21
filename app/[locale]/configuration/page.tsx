@@ -1,8 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { DEFAULT_REDIRECTS } from "@/lib/routes";
-import ConfigurationClient from "./configuration-client";
+import { DEFAULT_REDIRECTS } from "@/core/constants/routes";
+import ConfigurationClient from "@/features/configuration/components/configuration-client";
 
 export async function generateMetadata({
   params,

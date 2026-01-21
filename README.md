@@ -10,74 +10,79 @@ FlashyCardyApp is a web-based flashcard application designed to help users creat
 
 ### Project Structure
 
+This project uses an **enterprise-scale architecture** with domain-driven + feature-based organization:
+
 ```
 📦 training-cursor-flashycardyapp/
-├── 📂 app/                      # Next.js App Router
-│   ├── 📂 api/                  # API routes
-│   ├── 📂 [locale]/             # Locale-specific routes
-│   │   ├── layout.tsx           # Locale layout with UI
-│   │   └── page.tsx             # Home page
-│   ├── layout.tsx               # Root layout
-│   └── globals.css              # Global styles
-├── 📂 components/               # React components
-│   ├── 📂 ui/                   # shadcn/ui components (official only)
-│   ├── 📂 custom/               # Custom components (only when shadcn/ui doesn't provide)
-│   ├── header.tsx               # Header component
-│   ├── footer.tsx               # Footer component
-│   ├── language-switcher.tsx    # Language selection component
-│   └── structured-data.tsx      # SEO structured data
-├── 📂 db/                       # Database layer
-│   ├── schema.ts                # Table definitions (decks & cards)
-│   ├── 📂 queries/              # Database query helpers
-│   │   ├── card-queries.ts      # Card-related queries
-│   │   └── deck-queries.ts      # Deck-related queries
-│   └── 📂 test/                 # Database tests
-│       ├── card-queries.test.ts # Card query tests
-│       ├── deck-queries.test.ts # Deck query tests
-│       ├── test-data.ts         # Reusable test datasets
-│       ├── test-data.test.ts    # Test data validation
-│       └── test-utils.ts        # Test utilities
-├── 📂 documentation/            # Project documentation
-│   ├── database.md              # Database and ORM guide
-│   ├── internationalization.md  # i18n setup and usage
-│   └── testing.md               # Testing documentation
-├── 📂 drizzle/                  # Database migrations
-├── 📂 i18n/                     # Internationalization config
-│   ├── request.ts               # next-intl configuration
-│   └── routing.ts               # Locale routing setup
-├── 📂 lib/                      # Shared utilities
-│   ├── db.ts                    # Drizzle ORM instance
-│   ├── routes.ts                # Centralized route configuration
-│   └── utils.ts                 # Utility functions
-├── 📂 messages/                 # Translation files
-│   ├── en.json                  # English translations
-│   └── fr.json                  # French translations
-└── 📜 README.md                 # This file
+├── 📂 src/                      # Source code (new enterprise structure)
+│   ├── 📂 core/                 # Core business logic
+│   │   ├── 📂 domains/          # Domain models and types
+│   │   │   ├── user/           # User domain
+│   │   │   ├── deck/           # Deck domain
+│   │   │   ├── card/           # Card domain
+│   │   │   └── ai/             # AI/LLM domain
+│   │   ├── 📂 types/            # Cross-domain shared types
+│   │   └── 📂 constants/        # Application-wide constants (routes, config)
+│   │
+│   ├── 📂 features/             # Feature modules (vertical slices)
+│   │   ├── 📂 decks/           # Deck management
+│   │   │   ├── actions.ts      # Server actions
+│   │   │   ├── queries.ts      # Database queries
+│   │   │   └── components/     # Feature components
+│   │   ├── 📂 cards/           # Card management
+│   │   ├── 📂 ai-generation/   # AI card generation
+│   │   ├── 📂 dashboard/       # Dashboard feature
+│   │   └── 📂 internationalization/ # i18n feature
+│   │
+│   ├── 📂 infrastructure/       # Infrastructure layer
+│   │   ├── 📂 database/        # Database schema, migrations, connection
+│   │   └── 📂 authentication/  # Auth middleware
+│   │
+│   └── 📂 shared/              # Shared utilities and components
+│       ├── 📂 components/      # UI components (shadcn/ui), layout, common
+│       ├── 📂 hooks/           # Shared React hooks
+│       ├── 📂 utils/           # Utility functions
+│       └── 📂 types/           # Shared utility types (branded types)
+│
+├── 📂 app/                      # Next.js App Router (routing only)
+│   └── 📂 [locale]/             # Locale-specific routes
+├── 📂 tests/                    # Test files
+│   ├── 📂 unit/                # Unit tests
+│   ├── 📂 integration/         # Integration tests
+│   └── 📂 fixtures/            # Test data and utilities
+├── 📂 docs/                     # Project documentation
+├── 📂 config/                   # Configuration files
+├── 📂 messages/                 # Translation files (en, fr)
+└── 📂 public/                   # Static assets
 ```
 
 ### Architecture Layers
 
-1. **Frontend Layer** (Next.js 16)
-   - React 19 components
-   - Server and Client components
-   - shadcn/ui for UI components
-   - Tailwind CSS for styling
+The application follows a **layered architecture** with clear separation of concerns:
 
-2. **Authentication Layer** (Clerk)
-   - User authentication and management
-   - Session handling
-   - Protected routes via middleware
-   - Centralized route configuration ([lib/routes.ts](mdc:lib/routes.ts))
+1. **Core Layer** (`src/core/`)
+   - Domain models and business logic
+   - Application-wide types and constants
+   - No dependencies on features or infrastructure
 
-3. **API Layer** (Next.js API Routes)
-   - RESTful endpoints
-   - Server-side business logic
-   - Database operations
+2. **Features Layer** (`src/features/`)
+   - Self-contained feature modules (vertical slices)
+   - Each feature owns its actions, queries, components, and types
+   - Examples: decks, cards, ai-generation, dashboard
 
-4. **Database Layer** (Neon PostgreSQL + Drizzle ORM)
-   - Serverless PostgreSQL database
-   - Type-safe ORM queries
-   - Automated migrations
+3. **Infrastructure Layer** (`src/infrastructure/`)
+   - Technical concerns (database, authentication, monitoring)
+   - Drizzle ORM for type-safe database queries
+   - Clerk authentication middleware
+
+4. **Shared Layer** (`src/shared/`)
+   - Reusable UI components (shadcn/ui)
+   - Common hooks and utilities
+   - Shared types (branded types for type safety)
+
+5. **Routing Layer** (`app/`)
+   - Next.js App Router with locale support
+   - Minimal page components that import from features
 
 ## 🛠️ Technologies Used
 
@@ -106,6 +111,11 @@ FlashyCardyApp is a web-based flashcard application designed to help users creat
 - **Tailwind CSS 4** - Utility-first CSS framework
 - **Radix UI** - Headless UI primitives (used by shadcn/ui)
 - **Lucide React** - Icon library
+
+### AI & Machine Learning
+- **Google Generative AI** - AI-powered card generation
+- **Gemini 1.5 Flash** - Fast and efficient LLM model
+- LLM-agnostic architecture supporting multiple providers
 
 ### Internationalization
 - **next-intl** - i18n solution for Next.js App Router
@@ -143,6 +153,14 @@ FlashyCardyApp is a web-based flashcard application designed to help users creat
    - Delete individual cards
    - Automatic cleanup when parent deck is deleted
 
+4. **AI Card Generation** ✨ NEW
+   - Automatically generate flashcards using AI
+   - Context-aware generation based on deck title and description
+   - Avoids duplicates by analyzing existing cards
+   - Multi-language support (10+ languages)
+   - Preview and edit cards before adding to deck
+   - LLM-agnostic architecture (currently using Gemini)
+
 ### Database Schema
 
 **Decks Table**
@@ -178,7 +196,14 @@ CLERK_SECRET_KEY=your_clerk_secret_key
 
 # Neon PostgreSQL Database
 DATABASE_URL=your_neon_database_url
+
+# LLM Configuration (for AI card generation)
+LLM_PROVIDER=gemini
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemini-1.5-flash
 ```
+
+**Note**: To use AI card generation, you'll need a Gemini API key from [Google AI Studio](https://makersuite.google.com/app/apikey).
 
 4. Apply database migrations:
 ```bash
@@ -214,11 +239,18 @@ npx drizzle-kit studio    # Open Drizzle Studio (visual database browser)
 
 Detailed documentation is available in the `documentation/` directory:
 
-- [**Database Guide**](documentation/database.md) - Complete guide to Drizzle ORM setup, schema definitions, database operations, and migration management
-- [**Internationalization**](documentation/internationalization.md) - i18n setup, adding languages, translation management, and usage patterns
-- [**shadcn/ui Integration**](documentation/shadcn-ui.md) - shadcn/ui architecture, component usage, customization guide, and best practices
-- [**Testing Documentation**](documentation/testing.md) - Testing strategy, test suite structure, running tests, and adding new tests
-- [**Database Test Data**](src/db/README.md) - Reusable test datasets, query helpers, and database testing guide
+### Architecture
+- [**Source Code Organization**](.cursor/rules/architecture-source-organisation.mdc) - 🏢 **ENTERPRISE STRUCTURE**: Complete specification for domain-driven + feature-based architecture
+
+### Features
+- [**AI Card Generation**](docs/features/ai-card-generation.md) - AI-powered flashcard generation using Gemini
+- [**Internationalization**](docs/features/internationalization.md) - i18n setup, adding languages, and translation management
+
+### Guides
+- [**Database Guide**](docs/guides/database.md) - Drizzle ORM setup, schema, queries, and migrations
+- [**Testing Guide**](docs/guides/testing.md) - Testing strategy, test structure, and best practices
+- [**shadcn/ui Components**](docs/guides/shadcn-ui.md) - Component usage guidelines and patterns
+- [**AI Generation Quick Start**](docs/guides/quickstart-ai-generation.md) - Quick start guide for AI features
 
 ## 🤝 Contributing
 

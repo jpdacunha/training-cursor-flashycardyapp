@@ -1,9 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getUserDecks } from "@/db/queries/deck-queries";
-import { DEFAULT_REDIRECTS } from "@/lib/routes";
-import DashboardClient from "./dashboard-client";
+import { getUserDecks } from "@/features/decks/queries";
+import { DEFAULT_REDIRECTS } from "@/core/constants/routes";
+import DashboardClient from "@/features/dashboard/components/dashboard-client";
 
 export async function generateMetadata({ params }: { params: { locale: string } }) {
   const { locale } = await params;

@@ -1,8 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { getDeckById } from "@/db/queries/deck-queries";
-import { getCardsByDeckId } from "@/db/queries/card-queries";
-import { DEFAULT_REDIRECTS } from "@/lib/routes";
+import { getDeckById } from "@/features/decks/queries";
+import { getCardsByDeckId } from "@/features/cards/queries";
+import { DEFAULT_REDIRECTS } from "@/core/constants/routes";
 import { DeckDetailClient } from "./deck-detail-client";
 
 export default async function DeckDetailPage({

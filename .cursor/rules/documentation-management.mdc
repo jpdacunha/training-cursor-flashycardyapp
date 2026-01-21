@@ -5,28 +5,80 @@ alwaysApply: true
 
 ## Documentation Organization
 
-All markdown documentation files must be stored in the `documentation/` directory, with the exception of [README.md](mdc:README.md) which must remain at the project root.
+All markdown documentation files must be stored in the `docs/` directory using a hierarchical structure, with the exception of [README.md](mdc:README.md) which must remain at the project root.
+
+This hierarchical structure provides better organization as the documentation grows and aligns with enterprise-scale architecture principles.
 
 ### Directory Structure
 
 ```
 /
 ├── README.md (root-level project overview)
-└── documentation/
-    ├── architecture.md
-    ├── database.md
-    ├── testing.md
-    └── ... (other documentation files)
+└── docs/
+    ├── architecture/         # System design documents
+    │   ├── overview.md      # High-level architecture
+    │   ├── domain-model.md  # Domain model documentation
+    │   ├── data-flow.md     # Data flow diagrams
+    │   └── adr/             # Architecture Decision Records
+    │       ├── 001-type-organization.md
+    │       ├── 002-feature-modules.md
+    │       └── 003-database-strategy.md
+    │
+    ├── features/            # Feature documentation
+    │   ├── ai-card-generation.md
+    │   ├── internationalization.md
+    │   ├── decks.md
+    │   └── cards.md
+    │
+    ├── guides/              # Developer guides
+    │   ├── getting-started.md
+    │   ├── adding-features.md
+    │   ├── database.md
+    │   ├── testing.md
+    │   ├── deployment.md
+    │   └── shadcn-ui.md
+    │
+    └── api/                 # API documentation
+        ├── server-actions.md
+        ├── database-queries.md
+        └── endpoints.md
 ```
+
+### Documentation Categories
+
+**architecture/** - System design and architectural decisions
+- High-level architecture overviews
+- Domain models and business logic structure
+- Data flow and system interactions
+- Architecture Decision Records (ADRs)
+
+**features/** - Feature-specific documentation
+- Individual feature guides
+- Feature workflows and user stories
+- Feature architecture and implementation details
+
+**guides/** - Developer and operational guides
+- Getting started guides
+- Development workflows
+- Testing strategies
+- Deployment procedures
+- Tool and library usage
+
+**api/** - API and integration documentation
+- API endpoints and contracts
+- Server actions documentation
+- Database query patterns
+- Integration guides
 
 ## Documentation Maintenance
 
 **Critical Rule**: Whenever you modify code in the project, you **must**:
 
-1. **Identify affected documentation**: Determine which documentation files in the `documentation/` directory are related to the code changes
+1. **Identify affected documentation**: Determine which documentation files in the `docs/` directory are related to the code changes
 2. **Update the documentation**: Ensure all relevant documentation is updated to reflect the code changes
 3. **Maintain accuracy**: Keep documentation synchronized with the actual implementation
 4. **Update references**: If adding new documentation files, update [README.md](mdc:README.md) to reference them
+5. **Place in correct category**: Ensure new documentation is placed in the appropriate subdirectory (`architecture/`, `features/`, `guides/`, or `api/`)
 
 ## Documentation Philosophy: Current State Only
 
@@ -74,7 +126,8 @@ The [README.md](mdc:README.md) file at the project root serves as the main entry
 2. **Architecture Overview**: High-level architecture and project structure
 3. **Technologies Used**: List of frameworks, libraries, and tools used in the project
 4. **Functional Description**: What the application does from a functional perspective
-5. **Documentation Index**: A comprehensive list of all documentation files in the `documentation/` directory with:
+5. **Documentation Index**: A comprehensive, categorized list of all documentation files in the `docs/` directory with:
+   - Category headers (Architecture, Features, Guides, API)
    - File name (linked)
    - Brief description of the topic covered
 
@@ -83,20 +136,75 @@ The [README.md](mdc:README.md) file at the project root serves as the main entry
 ```markdown
 ## Documentation
 
-- [Architecture](documentation/architecture.md) - Detailed system architecture and design patterns
-- [Database](documentation/database.md) - Database schema, migrations, and query patterns
-- [Testing](documentation/testing.md) - Testing strategy, test structure, and guidelines
-- [API](documentation/api.md) - API endpoints and integration guides
+### Architecture
+- [Overview](docs/architecture/overview.md) - High-level system architecture and design patterns
+- [Domain Model](docs/architecture/domain-model.md) - Core domain models and business logic
+- [Data Flow](docs/architecture/data-flow.md) - Data flow and system interactions
+
+### Features
+- [AI Card Generation](docs/features/ai-card-generation.md) - AI-powered flashcard generation
+- [Internationalization](docs/features/internationalization.md) - Multi-language support
+
+### Guides
+- [Getting Started](docs/guides/getting-started.md) - Quick start guide for developers
+- [Database](docs/guides/database.md) - Database schema, migrations, and query patterns
+- [Testing](docs/guides/testing.md) - Testing strategy and test structure
+- [shadcn/ui](docs/guides/shadcn-ui.md) - UI component library usage
+
+### API
+- [Server Actions](docs/api/server-actions.md) - Server action patterns and examples
+- [Database Queries](docs/api/database-queries.md) - Database query helpers and patterns
 ```
 
 ## When Creating New Features
 
 When adding new features or making significant changes:
 
-1. Create or update relevant documentation files in `documentation/`
-2. Ensure [README.md](mdc:README.md) includes references to the new documentation
-3. Write documentation in English only
-4. Use clear, concise language with code examples where appropriate
+1. **Create or update documentation files** in the appropriate `docs/` subdirectory:
+   - Feature documentation → `docs/features/[feature-name].md`
+   - Implementation guides → `docs/guides/[guide-name].md`
+   - Architecture changes → `docs/architecture/[topic].md`
+   - API changes → `docs/api/[api-topic].md`
+
+2. **Ensure [README.md](mdc:README.md) includes references** to the new documentation in the correct category
+
+3. **Write documentation in English only**
+
+4. **Use clear, concise language** with code examples where appropriate
+
+5. **Follow the file naming convention**: Use lowercase with hyphens (e.g., `ai-card-generation.md`, `getting-started.md`)
+
+## Documentation File Placement Guidelines
+
+### When to use each directory:
+
+**`docs/architecture/`** - Use for:
+- System design documents
+- Architecture overviews
+- Domain model documentation
+- Architecture Decision Records (ADRs)
+- Data flow diagrams
+- Technical architecture patterns
+
+**`docs/features/`** - Use for:
+- Individual feature documentation
+- Feature workflows and user stories
+- Feature-specific implementation details
+- Feature architecture and design
+
+**`docs/guides/`** - Use for:
+- Step-by-step developer guides
+- How-to tutorials
+- Tool usage guides (database, testing, deployment)
+- Development workflow documentation
+- Best practices and conventions
+
+**`docs/api/`** - Use for:
+- API endpoint documentation
+- Server action patterns
+- Database query documentation
+- Integration guides
+- API contracts and types
 
 ## Workflow Checklist
 
@@ -105,6 +213,73 @@ Before completing any code modification task:
 - [ ] Code changes are complete
 - [ ] Related documentation files are identified
 - [ ] Documentation files are updated to reflect changes
-- [ ] [README.md](mdc:README.md) references all documentation files
+- [ ] New documentation is placed in the correct `docs/` subdirectory
+- [ ] [README.md](mdc:README.md) references all documentation files in the appropriate category
 - [ ] All documentation is in English
-- [ ] All documentation is in the `documentation/` directory (except README.md)
+- [ ] File naming follows the convention (lowercase with hyphens)
+- [ ] Documentation focuses on current state (not history)
+
+## Examples
+
+### Example 1: Adding a New Feature
+
+When adding a new "payment processing" feature:
+
+1. **Create feature documentation**:
+   ```
+   docs/features/payment-processing.md
+   ```
+
+2. **Update README.md** under the "Features" section:
+   ```markdown
+   ### Features
+   - [Payment Processing](docs/features/payment-processing.md) - Payment integration and processing
+   ```
+
+3. **If adding API endpoints**, create:
+   ```
+   docs/api/payment-endpoints.md
+   ```
+
+### Example 2: Adding a Development Guide
+
+When documenting how to use a new tool or workflow:
+
+1. **Create guide documentation**:
+   ```
+   docs/guides/using-redis-cache.md
+   ```
+
+2. **Update README.md** under the "Guides" section:
+   ```markdown
+   ### Guides
+   - [Using Redis Cache](docs/guides/using-redis-cache.md) - Redis caching strategy and patterns
+   ```
+
+### Example 3: Documenting an Architecture Decision
+
+When making a significant architectural decision:
+
+1. **Create ADR document**:
+   ```
+   docs/architecture/adr/004-authentication-strategy.md
+   ```
+
+2. **Follow ADR format**:
+   ```markdown
+   # ADR 004: Authentication Strategy
+   
+   ## Status
+   Accepted
+   
+   ## Context
+   [Describe the context and problem]
+   
+   ## Decision
+   [Describe the decision]
+   
+   ## Consequences
+   [Describe the consequences]
+   ```
+
+3. **Update README.md** under the "Architecture" section if needed

@@ -2,18 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import { EditDeckDialog } from "@/components/edit-deck-dialog";
-import { AddCardDialog } from "@/components/add-card-dialog";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import { Button } from "@/shared/components/ui/button";
+import { Progress } from "@/shared/components/ui/progress";
+import { Textarea } from "@/shared/components/ui/textarea";
+import { Separator } from "@/shared/components/ui/separator";
+import { EditDeckDialog } from "@/features/decks/components/edit-deck-dialog";
+import { AddCardDialog } from "@/features/cards/components/add-card-dialog";
+import { CompleteDeckDialog } from "@/features/decks/components/complete-deck-dialog";
 import { Pencil, Save, X, ArrowLeft } from "lucide-react";
-import { updateCard } from "@/lib/actions/card-actions";
-import { Link } from "@/i18n/routing";
+import { updateCard } from "@/features/cards/actions";
+import { Link } from "@/features/internationalization/config";
 import { toast } from "sonner";
-import { ROUTES } from "@/lib/routes";
+import { ROUTES } from "@/core/constants/routes";
 
 interface CardData {
   id: number;
@@ -157,7 +158,15 @@ export function DeckDetailClient({ deck, cards: initialCards }: DeckDetailClient
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">{t("cards")}</h2>
-          <AddCardDialog deckId={deck.id} />
+          <div className="flex gap-2">
+            <CompleteDeckDialog
+              deckId={deck.id}
+              deckTitle={deck.title}
+              deckDescription={deck.description || ""}
+              existingCardsCount={cards.length}
+            />
+            <AddCardDialog deckId={deck.id} />
+          </div>
         </div>
         
         {cards.length === 0 ? (

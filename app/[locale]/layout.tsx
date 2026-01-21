@@ -4,9 +4,9 @@ import { dark } from "@clerk/themes";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { routing } from "@/i18n/routing";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+import { routing } from "@/features/internationalization/config";
+import { Header } from "@/shared/components/layout/header";
+import { Footer } from "@/shared/components/layout/footer";
 import { Toaster } from "sonner";
 
 const poppins = Poppins({

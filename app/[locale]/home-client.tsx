@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 
 export default function HomeClient() {
   const t = useTranslations("Home");

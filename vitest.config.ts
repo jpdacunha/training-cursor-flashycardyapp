@@ -12,15 +12,13 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@/core': path.resolve(__dirname, './src/core'),
+      '@/features': path.resolve(__dirname, './src/features'),
+      '@/infrastructure': path.resolve(__dirname, './src/infrastructure'),
+      '@/shared': path.resolve(__dirname, './src/shared'),
+      '@/app': path.resolve(__dirname, './app'),
+      '@/tests': path.resolve(__dirname, './tests'),
       '@': path.resolve(__dirname, './'),
     },
   },
 });
-
-
-
-
-
-
-
-
