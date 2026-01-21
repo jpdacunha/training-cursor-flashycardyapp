@@ -18,7 +18,22 @@
     "myDecks": "My Decks",
     "noDecks": "You don't have any decks yet. Create your first deck to get started!",
     "createdAt": "Created",
-    "updatedAt": "Updated"
+    "updatedAt": "Updated",
+    "createDeck": "Create Deck",
+    "createDeckTitle": "Create New Deck",
+    "createDeckDescription": "Add a new flashcard deck to your collection",
+    "createDeckButton": "Create Deck",
+    "createSuccess": "Deck created successfully",
+    "createError": "Failed to create deck",
+    "editDeck": "Edit Deck",
+    "editDeckTitle": "Edit Deck",
+    "editDeckDescription": "Update your deck information",
+    "deckTitle": "Deck Title",
+    "deckDescription": "Description",
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel",
+    "updateSuccess": "Deck updated successfully",
+    "updateError": "Failed to update deck"
   },
   "LanguageSwitcher": {
     "selectLanguage": "Select language"
@@ -67,8 +82,11 @@
     "save": "Save",
     "cancel": "Cancel",
     "editCard": "Edit Card",
+    "editDeck": "Edit Deck",
     "updateSuccess": "Card updated successfully",
     "updateError": "Failed to update card",
+    "deckUpdateSuccess": "Deck updated successfully",
+    "deckUpdateError": "Failed to update deck",
     "noCards": "No cards in this deck yet.",
     "backToDashboard": "Back to Dashboard"
   }

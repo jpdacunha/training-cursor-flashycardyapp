@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { EditDeckDialog } from "@/components/edit-deck-dialog";
 import { Pencil, Save, X, ArrowLeft } from "lucide-react";
 import { updateCard } from "@/lib/actions/card-actions";
 import { Link } from "@/i18n/routing";
 import { toast } from "sonner";
+import { ROUTES } from "@/lib/routes";
 
 interface CardData {
   id: number;
@@ -99,7 +101,7 @@ export function DeckDetailClient({ deck, cards: initialCards }: DeckDetailClient
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       {/* Back button */}
-      <Link href="/dashboard">
+      <Link href={ROUTES.DASHBOARD}>
         <Button variant="ghost" size="sm">
           <ArrowLeft className="mr-2 h-4 w-4" />
           {t("backToDashboard")}
@@ -109,10 +111,19 @@ export function DeckDetailClient({ deck, cards: initialCards }: DeckDetailClient
       {/* Deck Information Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl">{deck.title}</CardTitle>
-          {deck.description && (
-            <CardDescription className="text-base">{deck.description}</CardDescription>
-          )}
+          <div className="flex justify-between items-start">
+            <div className="flex-1">
+              <CardTitle className="text-3xl">{deck.title}</CardTitle>
+              {deck.description && (
+                <CardDescription className="text-base">{deck.description}</CardDescription>
+              )}
+            </div>
+            <EditDeckDialog
+              deckId={deck.id}
+              currentTitle={deck.title}
+              currentDescription={deck.description || ""}
+            />
+          </div>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2 text-muted-foreground">
@@ -157,7 +168,7 @@ export function DeckDetailClient({ deck, cards: initialCards }: DeckDetailClient
                     </CardTitle>
                     {editingCardId !== card.id && (
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         onClick={() => handleEdit(card)}
                       >

@@ -5,6 +5,7 @@ import { getCardById, updateCardInDb } from '@/db/queries/card-queries';
 import { getDeckById } from '@/db/queries/deck-queries';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { buildRoute } from '@/lib/routes';
 
 const UpdateCardSchema = z.object({
   cardId: z.number().positive(),
@@ -55,7 +56,7 @@ export async function updateCard(input: UpdateCardInput) {
     // Update the card
     const updatedCard = await updateCardInDb(cardId, { front, back });
     
-    revalidatePath(`/decks/${deck.id}`);
+    revalidatePath(buildRoute.deck(deck.id));
     
     return { success: true, data: updatedCard };
   } catch (error) {

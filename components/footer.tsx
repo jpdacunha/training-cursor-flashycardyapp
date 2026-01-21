@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { CreditCard } from "lucide-react";
+import { ROUTES } from "@/lib/routes";
 
 export function Footer() {
   const t = useTranslations("Footer");
@@ -18,7 +19,7 @@ export function Footer() {
           
           <nav className="flex gap-6">
             <Link 
-              href="/credits" 
+              href={ROUTES.CREDITS} 
               className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center"
             >
               <CreditCard className="w-4 h-4 mr-2" />

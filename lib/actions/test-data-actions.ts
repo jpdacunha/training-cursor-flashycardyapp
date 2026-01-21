@@ -3,6 +3,7 @@
 import { auth } from '@clerk/nextjs/server';
 import { loadTestDataInDb, deleteAllUserDataFromDb } from '@/db/queries/test-data-queries';
 import { revalidatePath } from 'next/cache';
+import { ROUTES } from '@/lib/routes';
 
 /**
  * Server action to load test data for the current user
@@ -24,8 +25,8 @@ export async function loadTestData() {
     const result = await loadTestDataInDb(userId);
     
     // Step 4: Revalidate cache
-    revalidatePath('/dashboard');
-    revalidatePath('/configuration');
+    revalidatePath(ROUTES.DASHBOARD);
+    revalidatePath(ROUTES.CONFIGURATION);
     
     return { 
       success: true, 

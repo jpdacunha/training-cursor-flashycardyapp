@@ -5,6 +5,7 @@ import { Calendar } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -12,8 +13,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { EditDeckDialog } from "@/components/edit-deck-dialog";
+import { AddDeckDialog } from "@/components/add-deck-dialog";
 import { InferSelectModel } from "drizzle-orm";
 import { decksTable } from "@/db/schema";
+import { buildRoute } from "@/lib/routes";
 
 type Deck = InferSelectModel<typeof decksTable>;
 
@@ -23,7 +27,10 @@ export default function DashboardClient({ decks }: { decks: Deck[] }) {
 
   return (
     <div>
-      <h1 className="text-4xl font-bold mb-8">{t("title")}</h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-4xl font-bold">{t("title")}</h1>
+        <AddDeckDialog />
+      </div>
       <p className="text-lg text-muted-foreground mb-8">{t("description")}</p>
 
       <div className="space-y-4">
@@ -34,14 +41,38 @@ export default function DashboardClient({ decks }: { decks: Deck[] }) {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {decks.map((deck) => (
-              <Link key={deck.id} href={`/decks/${deck.id}`} className="block">
-                <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                  <CardHeader>
-                    <CardTitle>{deck.title}</CardTitle>
-                    <CardDescription>{deck.description || ''}</CardDescription>
-                  </CardHeader>
-                  <Separator />
-                  <CardFooter className="flex justify-between text-sm text-muted-foreground">
+              <Card key={deck.id} className="hover:shadow-lg transition-shadow flex flex-col h-full">
+                <CardHeader className="flex-1">
+                  <div className="space-y-1.5">
+                    {/* Ligne 1 : Titre + Bouton */}
+                    <div className="flex items-start justify-between gap-4">
+                      <Link 
+                        href={buildRoute.deck(deck.id)} 
+                        className="flex-1 min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
+                      >
+                        <CardTitle>{deck.title}</CardTitle>
+                      </Link>
+                      <div className="flex-shrink-0">
+                        <EditDeckDialog
+                          deckId={deck.id}
+                          currentTitle={deck.title}
+                          currentDescription={deck.description || ""}
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Ligne 2 : Description sur toute la largeur */}
+                    <Link 
+                      href={buildRoute.deck(deck.id)} 
+                      className="block cursor-pointer hover:opacity-80 transition-opacity"
+                    >
+                      <CardDescription>{deck.description || ''}</CardDescription>
+                    </Link>
+                  </div>
+                </CardHeader>
+                <Separator />
+                <Link href={buildRoute.deck(deck.id)} className="block">
+                  <CardFooter className="h-20 flex flex-col sm:flex-row justify-between gap-2 text-sm text-muted-foreground cursor-pointer">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4" />
                       <span className="font-medium">{t("createdAt")}:</span>
@@ -53,8 +84,8 @@ export default function DashboardClient({ decks }: { decks: Deck[] }) {
                       <span>{new Date(deck.updatedAt).toLocaleDateString(locale)}</span>
                     </div>
                   </CardFooter>
-                </Card>
-              </Link>
+                </Link>
+              </Card>
             ))}
 
           </div>

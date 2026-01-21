@@ -18,7 +18,22 @@
     "myDecks": "Mes paquets",
     "noDecks": "Vous n'avez pas encore de paquets. Créez votre premier paquet pour commencer !",
     "createdAt": "Créé le",
-    "updatedAt": "Modifié le"
+    "updatedAt": "Modifié le",
+    "createDeck": "Créer un paquet",
+    "createDeckTitle": "Créer un nouveau paquet",
+    "createDeckDescription": "Ajoutez un nouveau paquet de cartes à votre collection",
+    "createDeckButton": "Créer le paquet",
+    "createSuccess": "Paquet créé avec succès",
+    "createError": "Échec de la création du paquet",
+    "editDeck": "Modifier le paquet",
+    "editDeckTitle": "Modifier le paquet",
+    "editDeckDescription": "Mettez à jour les informations de votre paquet",
+    "deckTitle": "Titre du paquet",
+    "deckDescription": "Description",
+    "saveChanges": "Enregistrer les modifications",
+    "cancel": "Annuler",
+    "updateSuccess": "Paquet mis à jour avec succès",
+    "updateError": "Échec de la mise à jour du paquet"
   },
   "LanguageSwitcher": {
     "selectLanguage": "Sélectionner la langue"
@@ -67,8 +82,11 @@
     "save": "Enregistrer",
     "cancel": "Annuler",
     "editCard": "Modifier la carte",
+    "editDeck": "Modifier le paquet",
     "updateSuccess": "Carte mise à jour avec succès",
     "updateError": "Échec de la mise à jour de la carte",
+    "deckUpdateSuccess": "Paquet mis à jour avec succès",
+    "deckUpdateError": "Échec de la mise à jour du paquet",
     "noCards": "Aucune carte dans ce paquet pour le moment.",
     "backToDashboard": "Retour au tableau de bord"
   }

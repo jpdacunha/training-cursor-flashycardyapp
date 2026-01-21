@@ -1,0 +1,304 @@
+---
+alwaysApply: true
+---
+
+# Centralized Route Management
+
+## Core Principle
+
+**CRITICAL**: No routes should be hardcoded in the project. ALL routes, redirects, and navigation must use constants or methods defined in [lib/routes.ts](mdc:lib/routes.ts) which centralizes route behavior and redirect handling.
+
+## Route Configuration
+
+All route definitions are centralized in [lib/routes.ts](mdc:lib/routes.ts) which provides:
+
+1. **ROUTES** - Base route path constants
+2. **PUBLIC_ROUTE_PATTERNS** - Patterns for Clerk middleware public route configuration
+3. **DEFAULT_REDIRECTS** - Default redirect destinations for various scenarios
+4. **buildRoute** - Helper functions to build dynamic routes
+5. **TypeScript types** - Route and DefaultRedirect types for type safety
+
+## Usage Patterns
+
+### Importing Routes
+
+Always import route constants and helpers from the centralized file:
+
+```typescript
+import { ROUTES, DEFAULT_REDIRECTS, buildRoute } from '@/lib/routes';
+```
+
+### Static Routes
+
+```typescript
+// ✅ CORRECT: Use route constants
+import { ROUTES } from '@/lib/routes';
+
+redirect(ROUTES.DASHBOARD);
+router.push(ROUTES.HOME);
+<Link href={ROUTES.CONFIGURATION}>Configuration</Link>
+
+// ❌ WRONG: Hardcoded route paths
+redirect('/dashboard');
+router.push('/');
+<Link href="/configuration">Configuration</Link>
+```
+
+### Dynamic Routes
+
+```typescript
+// ✅ CORRECT: Use buildRoute helpers
+import { buildRoute } from '@/lib/routes';
+
+const deckUrl = buildRoute.deck(deckId);
+const deckUrlWithLocale = buildRoute.deckWithLocale('en', deckId);
+
+redirect(buildRoute.deck(123));
+<Link href={buildRoute.deck(deck.id)}>View Deck</Link>
+
+// ❌ WRONG: String concatenation or template literals
+const deckUrl = `/decks/${deckId}`;
+const deckUrlWithLocale = `/${locale}/decks/${deckId}`;
+
+redirect(`/decks/${deckId}`);
+<Link href={`/decks/${deck.id}`}>View Deck</Link>
+```
+
+### Redirects
+
+```typescript
+// ✅ CORRECT: Use DEFAULT_REDIRECTS constants
+import { DEFAULT_REDIRECTS } from '@/lib/routes';
+
+if (!userId) {
+  redirect(DEFAULT_REDIRECTS.UNAUTHENTICATED);
+}
+
+if (authenticated) {
+  redirect(DEFAULT_REDIRECTS.AFTER_LOGIN);
+}
+
+// ❌ WRONG: Hardcoded redirect paths
+if (!userId) {
+  redirect('/');
+}
+
+if (authenticated) {
+  redirect('/dashboard');
+}
+```
+
+### Public Route Configuration
+
+```typescript
+// ✅ CORRECT: Use PUBLIC_ROUTE_PATTERNS for middleware
+import { PUBLIC_ROUTE_PATTERNS } from '@/lib/routes';
+
+export default clerkMiddleware(async (auth, req) => {
+  const isPublicRoute = PUBLIC_ROUTE_PATTERNS.some(pattern => 
+    matchesPattern(req.pathname, pattern)
+  );
+  
+  if (!isPublicRoute) await auth.protect();
+});
+
+// ❌ WRONG: Hardcoded patterns
+export default clerkMiddleware(async (auth, req) => {
+  const isPublicRoute = ['/sign-in', '/sign-up'].includes(req.pathname);
+  
+  if (!isPublicRoute) await auth.protect();
+});
+```
+
+## Common Use Cases
+
+### Navigation Links
+
+```typescript
+// ✅ CORRECT
+import { ROUTES } from '@/lib/routes';
+import { Link } from '@/i18n/routing';
+
+<nav>
+  <Link href={ROUTES.HOME}>Home</Link>
+  <Link href={ROUTES.DASHBOARD}>Dashboard</Link>
+  <Link href={ROUTES.CREDITS}>Credits</Link>
+</nav>
+```
+
+### Server Actions with Redirects
+
+```typescript
+// ✅ CORRECT
+"use server";
+
+import { redirect } from 'next/navigation';
+import { DEFAULT_REDIRECTS } from '@/lib/routes';
+
+export async function deleteDeck(input: DeleteDeckInput) {
+  const { userId } = await auth();
+  
+  if (!userId) {
+    redirect(DEFAULT_REDIRECTS.UNAUTHENTICATED);
+  }
+  
+  // Delete logic...
+  
+  redirect(DEFAULT_REDIRECTS.AUTHENTICATED);
+}
+```
+
+### Server Components with Auth Checks
+
+```typescript
+// ✅ CORRECT
+import { auth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
+import { DEFAULT_REDIRECTS } from '@/lib/routes';
+
+export default async function ProtectedPage() {
+  const { userId } = await auth();
+  
+  if (!userId) {
+    redirect(DEFAULT_REDIRECTS.UNAUTHENTICATED);
+  }
+  
+  // Page content...
+}
+```
+
+### Client-Side Navigation
+
+```typescript
+// ✅ CORRECT
+"use client";
+
+import { useRouter } from '@/i18n/routing';
+import { ROUTES, buildRoute } from '@/lib/routes';
+
+export function DeckCard({ deck }) {
+  const router = useRouter();
+  
+  const handleClick = () => {
+    router.push(buildRoute.deck(deck.id));
+  };
+  
+  return (
+    <Card onClick={handleClick}>
+      {/* Card content */}
+    </Card>
+  );
+}
+```
+
+## Adding New Routes
+
+When adding new routes to the application:
+
+1. **Add the route constant** to the `ROUTES` object in [lib/routes.ts](mdc:lib/routes.ts)
+2. **Add to PUBLIC_ROUTE_PATTERNS** if the route is public
+3. **Add to DEFAULT_REDIRECTS** if it's a common redirect destination
+4. **Create a buildRoute helper** if the route is dynamic
+5. **Update TypeScript types** if necessary (usually automatic)
+
+### Example: Adding a New Route
+
+```typescript
+// lib/routes.ts
+
+export const ROUTES = {
+  // ... existing routes
+  SETTINGS: "/settings",  // ✅ Add new route constant
+  PROFILE: "/profile",
+} as const;
+
+// If it includes dynamic segments:
+export const buildRoute = {
+  // ... existing helpers
+  userProfile: (userId: string) => `${ROUTES.PROFILE}/${userId}`,
+} as const;
+```
+
+## Best Practices
+
+### DO ✅
+
+1. **Always import from lib/routes.ts** for any route or redirect
+2. **Use ROUTES constants** for static routes
+3. **Use buildRoute helpers** for dynamic routes with parameters
+4. **Use DEFAULT_REDIRECTS** for common redirect scenarios
+5. **Add new routes to lib/routes.ts** before using them in code
+6. **Use TypeScript types** (Route, DefaultRedirect) for type safety
+7. **Keep route logic centralized** - all route-related behavior in lib/routes.ts
+
+### DON'T ❌
+
+1. **Never hardcode route strings** like `"/dashboard"` or `"/decks/123"`
+2. **Never use template literals** for route construction like `` `/${locale}/dashboard` ``
+3. **Never use string concatenation** for routes like `"/decks/" + deckId`
+4. **Never create route constants** outside of lib/routes.ts
+5. **Never duplicate route definitions** across multiple files
+6. **Never use magic strings** for redirects
+
+## Benefits
+
+1. **Single Source of Truth** - All routes defined in one place
+2. **Easy Refactoring** - Change a route in one file, updates everywhere
+3. **Type Safety** - TypeScript ensures routes are used correctly
+4. **Consistency** - Same route patterns across the entire application
+5. **Maintainability** - Easy to find and update all route definitions
+6. **Testing** - Centralized routes are easier to test and validate
+7. **Documentation** - lib/routes.ts serves as route documentation
+
+## Error Prevention
+
+Common errors prevented by this architecture:
+
+- **Typos in route paths** - Caught by TypeScript
+- **Inconsistent route usage** - Single source prevents variations
+- **Broken links after refactoring** - Change once, works everywhere
+- **Missing locale prefixes** - Helpers handle locale logic
+- **Incorrect redirect destinations** - Semantic constants make intent clear
+
+## Validation Checklist
+
+Before committing code with routes or navigation:
+
+- [ ] All route strings use ROUTES constants
+- [ ] Dynamic routes use buildRoute helpers
+- [ ] Redirects use DEFAULT_REDIRECTS constants
+- [ ] No hardcoded route strings in the code
+- [ ] No template literals or string concatenation for routes
+- [ ] New routes are added to lib/routes.ts first
+- [ ] Public routes are added to PUBLIC_ROUTE_PATTERNS if needed
+- [ ] TypeScript types are satisfied (no type errors)
+
+## Quick Reference
+
+| Use Case | Import | Example |
+|----------|--------|---------|
+| Static route | `ROUTES` | `ROUTES.DASHBOARD` |
+| Dynamic route | `buildRoute` | `buildRoute.deck(id)` |
+| Redirect | `DEFAULT_REDIRECTS` | `DEFAULT_REDIRECTS.AFTER_LOGIN` |
+| Public routes | `PUBLIC_ROUTE_PATTERNS` | Use in middleware |
+| Type safety | `Route`, `DefaultRedirect` | Type annotations |
+
+## Related Files
+
+- [lib/routes.ts](mdc:lib/routes.ts) - Centralized route configuration
+- [middleware.ts](mdc:middleware.ts) - Uses PUBLIC_ROUTE_PATTERNS
+- [i18n/routing.ts](mdc:i18n/routing.ts) - Locale-aware navigation utilities
+
+## Summary
+
+**Golden Rule**: Every route, redirect, and navigation in this project MUST use the centralized route configuration from [lib/routes.ts](mdc:lib/routes.ts). No exceptions.
+
+```typescript
+// ✅ ALWAYS DO THIS
+import { ROUTES, DEFAULT_REDIRECTS, buildRoute } from '@/lib/routes';
+
+// ❌ NEVER DO THIS
+const route = '/dashboard';
+redirect('/');
+<Link href="/decks/123">...</Link>
+```

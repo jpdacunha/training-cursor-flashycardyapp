@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Link } from "@/i18n/routing";
 import { Home, LayoutDashboard, Settings, LogIn, UserPlus } from "lucide-react";
+import { ROUTES } from "@/lib/routes";
 
 export function Header() {
   const t = useTranslations("Layout");
@@ -19,7 +20,7 @@ export function Header() {
   return (
     <header className="flex items-center justify-between p-4 border-b border-zinc-800">
       <div className="flex items-center gap-6">
-        <Link href="/" className="flex items-center">
+        <Link href={ROUTES.HOME} className="flex items-center">
           <Home className="w-5 h-5 mr-2" />
           <h1 className="text-xl font-semibold hover:text-primary transition-colors">
             {t("title")}
@@ -27,13 +28,13 @@ export function Header() {
         </Link>
         <SignedIn>
           <nav className="flex items-center gap-4">
-            <Link href="/dashboard">
+            <Link href={ROUTES.DASHBOARD}>
               <Button variant="ghost">
                 <LayoutDashboard className="w-4 h-4 mr-2" />
                 {t("dashboard")}
               </Button>
             </Link>
-            <Link href="/configuration">
+            <Link href={ROUTES.CONFIGURATION}>
               <Button variant="ghost">
                 <Settings className="w-4 h-4 mr-2" />
                 {t("configuration")}
