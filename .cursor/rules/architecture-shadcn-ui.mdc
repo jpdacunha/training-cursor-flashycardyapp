@@ -5,6 +5,22 @@ alwaysApply: true
 
 This project uses **shadcn/ui** for all UI elements and components.
 
+## Current Status
+
+**Last Verified: 2026-01-21**
+
+All components in `components/ui/` have been verified and are official shadcn/ui components:
+
+- ✅ `button.tsx` - Official shadcn/ui Button component (with React.forwardRef)
+- ✅ `card.tsx` - Official shadcn/ui Card component (with React.forwardRef, includes CardAction)
+- ✅ `input.tsx` - Official shadcn/ui Input component (with React.forwardRef)
+- ✅ `textarea.tsx` - Official shadcn/ui Textarea component (with React.forwardRef)
+- ✅ `dropdown-menu.tsx` - Official shadcn/ui Dropdown Menu component (uses Radix UI primitives)
+- ✅ `progress.tsx` - Official shadcn/ui Progress component (uses Radix UI primitives)
+- ✅ `separator.tsx` - Official shadcn/ui Separator component (uses Radix UI primitives)
+
+**No custom UI components exist in this project.**
+
 ## Configuration
 
 shadcn/ui is configured in [components.json](mdc:components.json) with the following settings:
@@ -39,14 +55,40 @@ npx shadcn@latest init -d
 
 ## STRICT USAGE POLICY
 
-**CRITICAL RULE: ABSOLUTELY NO CUSTOM UI COMPONENTS ALLOWED**
+**CRITICAL RULE: EXCLUSIVELY USE shadcn/ui COMPONENTS**
 
-This project **EXCLUSIVELY** uses shadcn/ui components for ALL UI elements. You must **NEVER** create custom UI components from scratch.
+This project **EXCLUSIVELY** uses shadcn/ui components for ALL UI elements.
+
+### Exception: Custom Components
+
+**Custom UI components are ONLY allowed when:**
+1. The component **does not exist** in the shadcn/ui library
+2. You have verified on [shadcn/ui documentation](https://ui.shadcn.com/docs/components) that no equivalent exists
+3. The component cannot be created by composing existing shadcn/ui components
+4. The custom component is documented (see requirements below)
+
+### Component Verification Requirement
+
+**MANDATORY**: Before using any component from `components/ui/`, you must verify it is an **official shadcn/ui component**:
+
+1. **Check the source**: Visit [shadcn/ui components](https://ui.shadcn.com/docs/components) to see the official implementation
+2. **Compare the code**: Ensure the component matches the official shadcn/ui implementation
+3. **Replace if custom**: If the component is custom, delete it and install the official version using `npx shadcn@latest add <component-name>`
+
+### Official shadcn/ui Component Characteristics
+
+Genuine shadcn/ui components typically have:
+- Use of `React.forwardRef` for ref forwarding
+- Consistent naming conventions and structure from shadcn/ui documentation
+- Standard shadcn/ui className patterns
+- TypeScript interfaces matching shadcn/ui specifications
 
 ### DO ✅
 
 - **ALWAYS** use shadcn/ui components for every UI element
 - **ALWAYS** check if a shadcn/ui component exists before writing any UI code
+- **ALWAYS** verify that existing components in `components/ui/` are official shadcn/ui components
+- **ALWAYS** replace custom components with official shadcn/ui versions
 - **ALWAYS** add missing shadcn/ui components using `npx shadcn@latest add <component-name>`
 - **ALWAYS** use the `cn()` utility from [lib/utils.ts](mdc:lib/utils.ts) for conditional class merging
 - **ALWAYS** use lucide-react icons for all iconography needs
@@ -54,11 +96,15 @@ This project **EXCLUSIVELY** uses shadcn/ui components for ALL UI elements. You 
 
 ### DON'T ❌
 
-- **NEVER** create custom UI components (buttons, inputs, cards, modals, etc.)
+- **NEVER** create custom UI components when shadcn/ui provides an equivalent
+- **NEVER** write custom implementations when shadcn/ui provides the component
+- **NEVER** assume a component in `components/ui/` is from shadcn/ui without verification
 - **NEVER** write custom styled divs when a shadcn/ui component exists
 - **NEVER** build forms without using shadcn/ui form components
 - **NEVER** create custom dialogs, modals, or overlays - use shadcn/ui Dialog, Sheet, or Popover
-- **NEVER** bypass shadcn/ui by creating "simple" custom components
+- **NEVER** bypass shadcn/ui by creating "simple" custom components to save time
+- **NEVER** modify the core structure of shadcn/ui components (only customize via className)
+- **NEVER** create a custom component without exhaustive verification that shadcn/ui doesn't offer it
 
 ## Clerk Integration Requirements
 
@@ -130,18 +176,229 @@ When integrating Clerk authentication, you **MUST** follow these rules:
 - **Overlays**: Dialog, Popover, Tooltip, Sheet, Drawer, Modal
 - **Interactive**: Button, Dropdown Menu, Context Menu, Hover Card
 
+## Creating Custom Components (Only When Necessary)
+
+### Verification Process Before Creating Custom Component
+
+**MANDATORY STEPS** before creating any custom UI component:
+
+1. **Search shadcn/ui documentation**
+   - Visit [shadcn/ui components](https://ui.shadcn.com/docs/components)
+   - Search for the component or similar functionality
+   - Check all component categories (Form, Layout, Navigation, Feedback, Data Display, Overlays, Interactive)
+
+2. **Check if composition is possible**
+   - Can you achieve the desired result by composing existing shadcn/ui components?
+   - Example: A "StatusCard" might just be a `Card` with a `Badge`
+   - Example: A "ConfirmDialog" might be a `Dialog` with `Button` components
+
+3. **Search shadcn/ui community**
+   - Check if someone has shared a similar component pattern
+   - Look for shadcn/ui recipes or examples
+
+4. **Only if ALL above fail**, proceed with custom component
+
+### Requirements for Custom Components
+
+If you must create a custom component, follow these requirements:
+
+1. **Location**: Place in `components/` directory, **NOT** in `components/ui/`
+   - `components/ui/` is **RESERVED** for official shadcn/ui components only
+   - Custom components go in `components/` or appropriate subdirectories (e.g., `components/custom/`)
+
+2. **Naming**: Use descriptive names that clearly differentiate from shadcn/ui components
+   - ✅ Good: `TimelineCard`, `StepIndicator`, `AnimatedCounter`
+   - ❌ Bad: `Card`, `Input`, `Button`
+
+3. **Documentation**: Add a JSDoc comment at the top of the file:
+   ```typescript
+   /**
+    * Custom Component: [ComponentName]
+    * 
+    * Purpose: [Why this component was created]
+    * 
+    * Reason: This component does not exist in shadcn/ui and cannot be 
+    * achieved through composition of existing shadcn/ui components.
+    * 
+    * Verified: [Date] - Checked shadcn/ui documentation and no equivalent found.
+    * 
+    * Usage: [Brief usage example]
+    */
+   ```
+
+4. **Use shadcn/ui primitives**: Build on top of shadcn/ui components when possible
+   ```typescript
+   // ✅ Good: Uses shadcn/ui Button as base
+   import { Button } from "@/components/ui/button";
+   
+   export function LoadingButton({ isLoading, children, ...props }) {
+     return (
+       <Button disabled={isLoading} {...props}>
+         {isLoading ? <Spinner /> : children}
+       </Button>
+     );
+   }
+   ```
+
+5. **Follow shadcn/ui patterns**: Use similar conventions
+   - Use `cn()` utility for className merging
+   - Support `className` prop for customization
+   - Use Tailwind CSS for styling
+   - Follow TypeScript typing patterns
+
+6. **Add to documentation**: Document the custom component
+   - Update `README.md` or relevant documentation
+   - List all custom components with their purpose
+   - Explain why they were needed
+
+### Example: Creating a Custom Component
+
+```typescript
+// components/custom/timeline.tsx
+
+/**
+ * Custom Component: Timeline
+ * 
+ * Purpose: Display a vertical timeline of events with dates and descriptions.
+ * 
+ * Reason: shadcn/ui does not provide a Timeline component, and this cannot
+ * be achieved through simple composition due to specific layout requirements.
+ * 
+ * Verified: 2026-01-21 - Checked shadcn/ui documentation, no Timeline component.
+ * 
+ * Usage:
+ * <Timeline>
+ *   <TimelineItem date="2024-01-01" title="Event 1">Content</TimelineItem>
+ *   <TimelineItem date="2024-01-02" title="Event 2">Content</TimelineItem>
+ * </Timeline>
+ */
+
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card"; // Use shadcn/ui components
+
+interface TimelineProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
+
+export function Timeline({ className, children, ...props }: TimelineProps) {
+  return (
+    <div className={cn("relative space-y-4", className)} {...props}>
+      {children}
+    </div>
+  );
+}
+
+interface TimelineItemProps {
+  date: string;
+  title: string;
+  children: React.ReactNode;
+}
+
+export function TimelineItem({ date, title, children }: TimelineItemProps) {
+  return (
+    <Card>
+      <CardContent className="p-4">
+        <time className="text-sm text-muted-foreground">{date}</time>
+        <h3 className="font-semibold mt-1">{title}</h3>
+        <div className="mt-2">{children}</div>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+## When Finding Custom Components
+
+If you discover custom components in `components/ui/` that are not official shadcn/ui components:
+
+1. **Verify if shadcn/ui has this component**
+   - Check [shadcn/ui documentation](https://ui.shadcn.com/docs/components)
+   - If it exists in shadcn/ui, proceed with replacement
+
+2. **If shadcn/ui has the component:**
+   - Identify all usages - Search the codebase for imports
+   - Install official version - Run `npx shadcn@latest add <component-name>`
+   - Update imports - Ensure all files import the official version
+   - Delete custom component - Remove the custom implementation file
+   - Test functionality - Verify that the official component works correctly
+
+3. **If shadcn/ui does NOT have the component:**
+   - Move the component to `components/custom/` or appropriate directory
+   - Add required documentation (JSDoc comment)
+   - Update all imports to reflect new location
+   - Document in README.md
+
+### Common Components to Verify
+
+These components are frequently implemented as custom versions but should be replaced with official shadcn/ui versions:
+
+- Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter
+- Input, Textarea, Select
+- Button, Badge
+- Dialog, Sheet, Popover
+- Alert, Toast
+- Table, TableHeader, TableBody, TableRow, TableCell
+- Accordion, Tabs, Separator
+- Checkbox, Radio, Switch
+
 ## Before Writing Any UI Code
 
 **MANDATORY CHECKLIST:**
 
 1. [ ] Search shadcn/ui documentation for existing component
-2. [ ] If component exists, add it using `npx shadcn@latest add <component-name>`
-3. [ ] If multiple components could work, choose the most appropriate shadcn/ui component
-4. [ ] ONLY use Tailwind CSS for styling adjustments to shadcn/ui components
-5. [ ] Never create custom components - always use or compose shadcn/ui components
+2. [ ] Verify that `components/ui/<component-name>.tsx` is the official shadcn/ui implementation
+3. [ ] If component doesn't exist in project, add it using `npx shadcn@latest add <component-name>`
+4. [ ] If a custom implementation exists in `components/ui/`, replace it with the official version
+5. [ ] If multiple components could work, choose the most appropriate shadcn/ui component
+6. [ ] Try to achieve the desired result by composing existing shadcn/ui components
+7. [ ] ONLY use Tailwind CSS for styling adjustments to shadcn/ui components
+8. [ ] If shadcn/ui truly doesn't provide the component and composition is not possible:
+   - [ ] Follow the "Creating Custom Components" process above
+   - [ ] Place in `components/custom/` or appropriate directory (NOT `components/ui/`)
+   - [ ] Add required JSDoc documentation
+   - [ ] Use shadcn/ui components as building blocks
+   - [ ] Update project documentation
+
+## Summary: When to Use Custom vs shadcn/ui Components
+
+### ✅ Use shadcn/ui (99% of cases)
+
+- Any standard UI component (buttons, inputs, cards, dialogs, etc.)
+- Form elements and controls
+- Navigation components
+- Data display components
+- Feedback components (alerts, toasts)
+- Layout components
+
+### ✅ Custom Components Allowed (Rare exceptions only)
+
+**Only when ALL of these are true:**
+1. Component does NOT exist in shadcn/ui
+2. Cannot be created by composing shadcn/ui components
+3. Specific functionality is required that shadcn/ui doesn't provide
+4. Verified in shadcn/ui documentation (with date)
+5. Properly documented with JSDoc
+6. Placed in `components/custom/` or appropriate directory (NOT `components/ui/`)
+7. Built using shadcn/ui components as building blocks when possible
+
+**Examples of acceptable custom components:**
+- `Timeline` - Not provided by shadcn/ui
+- `KanbanBoard` - Complex drag-and-drop specific to app needs
+- `ChartWidget` - Integration with specific charting library
+- `CodeEditor` - Integration with Monaco or similar
+
+**Examples of UNACCEPTABLE custom components:**
+- ❌ Custom `Button` - Use shadcn/ui Button
+- ❌ Custom `Modal` - Use shadcn/ui Dialog
+- ❌ Custom `Card` - Use shadcn/ui Card
+- ❌ Custom form inputs - Use shadcn/ui Input, Textarea, Select
+- ❌ Custom `Dropdown` - Use shadcn/ui DropdownMenu
 
 ## Reference
 
 Always check the [shadcn/ui documentation](https://ui.shadcn.com/docs/components) for the latest components and usage patterns.
 
-**Remember**: If you find yourself creating a custom UI component, STOP and find the equivalent shadcn/ui component instead.
+**Golden Rule**: 
+- If shadcn/ui provides it → Use shadcn/ui (mandatory)
+- If shadcn/ui doesn't provide it → Verify thoroughly, then create custom if necessary (exceptional)

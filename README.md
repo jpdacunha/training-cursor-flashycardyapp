@@ -20,8 +20,12 @@ FlashyCardyApp is a web-based flashcard application designed to help users creat
 │   ├── layout.tsx               # Root layout
 │   └── globals.css              # Global styles
 ├── 📂 components/               # React components
-│   ├── 📂 ui/                   # shadcn/ui components
-│   └── language-switcher.tsx    # Language selection component
+│   ├── 📂 ui/                   # shadcn/ui components (official only)
+│   ├── 📂 custom/               # Custom components (only when shadcn/ui doesn't provide)
+│   ├── header.tsx               # Header component
+│   ├── footer.tsx               # Footer component
+│   ├── language-switcher.tsx    # Language selection component
+│   └── structured-data.tsx      # SEO structured data
 ├── 📂 db/                       # Database layer
 │   ├── schema.ts                # Table definitions (decks & cards)
 │   ├── 📂 queries/              # Database query helpers
@@ -93,9 +97,14 @@ FlashyCardyApp is a web-based flashcard application designed to help users creat
   - `@clerk/themes 2.4.46` - Themed components
 
 ### UI & Styling
-- **shadcn/ui** - Reusable component library (New York style, Neutral theme)
+- **shadcn/ui** - Primary UI component library (New York style, Neutral theme)
+  - All standard UI components are official shadcn/ui implementations
+  - Components use modern `data-slot` attribute pattern
+  - Located in `components/ui/` directory (reserved for shadcn/ui only)
+  - Custom components allowed ONLY when shadcn/ui doesn't provide equivalent
+  - Custom components placed in `components/custom/` directory
 - **Tailwind CSS 4** - Utility-first CSS framework
-- **Radix UI** - Headless UI primitives
+- **Radix UI** - Headless UI primitives (used by shadcn/ui)
 - **Lucide React** - Icon library
 
 ### Internationalization
@@ -207,14 +216,29 @@ Detailed documentation is available in the `documentation/` directory:
 
 - [**Database Guide**](documentation/database.md) - Complete guide to Drizzle ORM setup, schema definitions, database operations, and migration management
 - [**Internationalization**](documentation/internationalization.md) - i18n setup, adding languages, translation management, and usage patterns
+- [**shadcn/ui Integration**](documentation/shadcn-ui.md) - shadcn/ui architecture, component usage, customization guide, and best practices
 - [**Testing Documentation**](documentation/testing.md) - Testing strategy, test suite structure, running tests, and adding new tests
 - [**Database Test Data**](src/db/README.md) - Reusable test datasets, query helpers, and database testing guide
 
 ## 🤝 Contributing
 
 This project follows specific coding standards:
+
+### Code & Language
 - All code and comments must be in English
-- Use shadcn/ui components for UI elements
+
+### UI Components
+- **EXCLUSIVELY use official shadcn/ui components** for standard UI elements
+- `components/ui/` directory is **RESERVED** for official shadcn/ui components only
+- Custom components allowed **ONLY** when shadcn/ui doesn't provide equivalent
+- Custom components must:
+  - Be placed in `components/custom/` directory (NOT `components/ui/`)
+  - Include JSDoc documentation explaining why they're needed
+  - Verify that shadcn/ui doesn't offer the component
+  - Use shadcn/ui components as building blocks when possible
+- See `.cursor/rules/architecture-shadcn-ui.mdc` for complete guidelines
+
+### General
 - Follow the established project structure
 - Update documentation when making code changes
 
