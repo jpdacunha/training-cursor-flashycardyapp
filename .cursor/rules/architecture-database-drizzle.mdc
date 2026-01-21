@@ -283,6 +283,6 @@ When modifying the schema in [src/db/schema.ts](mdc:src/db/schema.ts):
 
 ## Resources
 
-- Drizzle ORM Documentation: https://orm.drizzle.team/docs/overview
-- Drizzle Queries: https://orm.drizzle.team/docs/queries
-- Drizzle with PostgreSQL: https://orm.drizzle.team/docs/get-started-postgresql
+- Drizzle ORM Documentation: https://orm.drizzle.team/documentation/overview
+- Drizzle Queries: https://orm.drizzle.team/documentation/queries
+- Drizzle with PostgreSQL: https://orm.drizzle.team/documentation/get-started-postgresql
