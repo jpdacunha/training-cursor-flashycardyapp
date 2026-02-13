@@ -4,6 +4,7 @@
 
 export interface Card {
   id: number;
+  publicId: string;
   deckId: number;
   front: string;
   back: string;

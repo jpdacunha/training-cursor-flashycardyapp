@@ -2,6 +2,7 @@ import { db } from '@/infrastructure/database/connection';
 import { decksTable, cardsTable } from '@/infrastructure/database/schema';
 import { eq, InferSelectModel } from 'drizzle-orm';
 import { TEST_DATASETS, prepareCardsForDeck } from '@/tests/fixtures/test-data';
+import { createCardsInDb } from '@/features/cards/queries';
 
 type Deck = InferSelectModel<typeof decksTable>;
 
@@ -31,7 +32,14 @@ export async function loadTestDataInDb(userId: string) {
     TEST_DATASETS.englishSpanish.cards,
     englishSpanishDeck.id
   );
-  await db.insert(cardsTable).values(englishSpanishCards);
+  // Use domain query helper to ensure required fields (publicId) are generated
+  await createCardsInDb(
+    englishSpanishCards.map((card) => ({
+      deckId: card.deckId,
+      front: card.front,
+      back: card.back,
+    }))
+  );
   totalCardsCreated += englishSpanishCards.length;
 
   // Load French History deck
@@ -51,7 +59,13 @@ export async function loadTestDataInDb(userId: string) {
     TEST_DATASETS.frenchHistory.cards,
     frenchHistoryDeck.id
   );
-  await db.insert(cardsTable).values(frenchHistoryCards);
+  await createCardsInDb(
+    frenchHistoryCards.map((card) => ({
+      deckId: card.deckId,
+      front: card.front,
+      back: card.back,
+    }))
+  );
   totalCardsCreated += frenchHistoryCards.length;
 
   return {

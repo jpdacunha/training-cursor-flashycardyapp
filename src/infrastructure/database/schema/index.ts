@@ -13,6 +13,7 @@ export const decksTable = pgTable("decks", {
 // Cards table - each card belongs to a deck
 export const cardsTable = pgTable("cards", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  publicId: varchar({ length: 10 }).notNull().unique(),
   deckId: integer().notNull().references(() => decksTable.id, { onDelete: "cascade" }),
   front: text().notNull(), // Front of the card (e.g., "Dog" or "When did the Battle of Hastings take place?")
   back: text().notNull(), // Back of the card (e.g., "Anjing" or "1066")

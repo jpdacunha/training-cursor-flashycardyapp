@@ -1,6 +1,37 @@
 import { db } from '@/infrastructure/database/connection';
 import { cardsTable, decksTable } from '@/infrastructure/database/schema';
 import { eq, and, desc } from 'drizzle-orm';
+import { randomBytes } from 'crypto';
+
+const CARD_PUBLIC_ID_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
+function isUniqueViolation(error: unknown): boolean {
+  const anyError = error as any;
+  return (
+    anyError?.code === '23505' ||
+    (typeof anyError?.message === 'string' &&
+      anyError.message.toLowerCase().includes('duplicate key value'))
+  );
+}
+
+function generateCardPublicId(length = 10): string {
+  const alphabet = CARD_PUBLIC_ID_ALPHABET;
+  const alphabetLength = alphabet.length;
+  const out: string[] = [];
+
+  // Rejection sampling to avoid modulo bias.
+  // 62 * 4 = 248, so we only accept bytes < 248.
+  while (out.length < length) {
+    const bytes = randomBytes(length);
+    for (const byte of bytes) {
+      if (byte >= 248) continue;
+      out.push(alphabet[byte % alphabetLength]);
+      if (out.length === length) break;
+    }
+  }
+
+  return out.join('');
+}
 
 /**
  * Get all cards for a specific deck
@@ -42,16 +73,31 @@ export async function createCardInDb(
   front: string,
   back: string
 ) {
-  const [newCard] = await db
-    .insert(cardsTable)
-    .values({
-      deckId,
-      front,
-      back,
-    })
-    .returning();
-  
-  return newCard;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const publicId = generateCardPublicId(10);
+
+    try {
+      const [newCard] = await db
+        .insert(cardsTable)
+        .values({
+          deckId,
+          publicId,
+          front,
+          back,
+        })
+        .returning();
+
+      return newCard;
+    } catch (error) {
+      if (isUniqueViolation(error) && attempt < 4) {
+        continue;
+      }
+      throw error;
+    }
+  }
+
+  // Should be unreachable
+  throw new Error('Failed to generate a unique card publicId');
 }
 
 /**
@@ -62,10 +108,28 @@ export async function createCardInDb(
 export async function createCardsInDb(
   cards: Array<{ deckId: number; front: string; back: string }>
 ) {
-  return await db
-    .insert(cardsTable)
-    .values(cards)
-    .returning();
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const used = new Set<string>();
+    const cardsWithIds = cards.map((card) => {
+      let publicId = generateCardPublicId(10);
+      while (used.has(publicId)) {
+        publicId = generateCardPublicId(10);
+      }
+      used.add(publicId);
+      return { ...card, publicId };
+    });
+
+    try {
+      return await db.insert(cardsTable).values(cardsWithIds).returning();
+    } catch (error) {
+      if (isUniqueViolation(error) && attempt < 4) {
+        continue;
+      }
+      throw error;
+    }
+  }
+
+  throw new Error('Failed to generate unique card publicIds');
 }
 
 /**

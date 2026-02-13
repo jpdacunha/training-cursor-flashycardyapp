@@ -36,7 +36,18 @@ export async function loadTestData() {
       }
     };
   } catch (error) {
-    console.error('Error loading test data:', error);
-    return { success: false, error: 'Failed to load test data' };
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error loading test data:', {
+      message: err.message,
+      name: err.name,
+      stack: err.stack,
+    });
+
+    // Keep the user-facing error generic, but return a debug hint for dev.
+    return {
+      success: false,
+      error: 'Failed to load test data',
+      debug: process.env.NODE_ENV === 'production' ? undefined : err.stack ?? err.message,
+    };
   }
 }

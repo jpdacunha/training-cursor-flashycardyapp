@@ -8,6 +8,13 @@
       "when": 1767697491910,
       "tag": "0000_hesitant_giant_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1770977325309,
+      "tag": "0001_smart_living_tribunal",
+      "breakpoints": true
     }
   ]
 }

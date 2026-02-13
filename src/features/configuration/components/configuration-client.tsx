@@ -33,6 +33,8 @@ export default function ConfigurationClient() {
           }),
         });
       } else {
+        // Help debugging: log server action response (including debug stack when available)
+        console.error("loadTestData failed", result);
         setNotification({
           type: 'error',
           message: t("testData.errorMessage"),
