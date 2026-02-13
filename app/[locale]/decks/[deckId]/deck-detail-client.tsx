@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
 import { Progress } from "@/shared/components/ui/progress";
@@ -10,7 +10,7 @@ import { Separator } from "@/shared/components/ui/separator";
 import { EditDeckDialog } from "@/features/decks/components/edit-deck-dialog";
 import { AddCardDialog } from "@/features/cards/components/add-card-dialog";
 import { CompleteDeckDialog } from "@/features/decks/components/complete-deck-dialog";
-import { Pencil, Save, X, ArrowLeft, Trash2 } from "lucide-react";
+import { Pencil, Save, X, ArrowLeft, Trash2, Calendar } from "lucide-react";
 import { deleteCard, updateCard } from "@/features/cards/actions";
 import { Link } from "@/features/internationalization/config";
 import { toast } from "sonner";
@@ -21,8 +21,8 @@ interface CardData {
   deckId: number;
   front: string;
   back: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
 interface DeckData {
@@ -41,12 +41,20 @@ interface DeckDetailClientProps {
 
 export function DeckDetailClient({ deck, cards: initialCards }: DeckDetailClientProps) {
   const t = useTranslations("DeckDetail");
+  const locale = useLocale();
   const [cards, setCards] = useState(initialCards);
   const [editingCardId, setEditingCardId] = useState<number | null>(null);
   const [editFront, setEditFront] = useState("");
   const [editBack, setEditBack] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [deletingCardId, setDeletingCardId] = useState<number | null>(null);
+
+  const formatDate = (value: Date | string) => {
+    const date = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+
+    return date.toLocaleDateString(locale);
+  };
 
   // Sync local state with props when they change (after router.refresh())
   useEffect(() => {
@@ -308,6 +316,21 @@ export function DeckDetailClient({ deck, cards: initialCards }: DeckDetailClient
                       </Button>
                     </div>
                   )}
+
+                  <Separator />
+
+                  <div className="text-sm text-muted-foreground flex flex-col sm:flex-row justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      <span className="font-medium">{t("createdAt")}:</span>
+                      <span>{formatDate(card.createdAt)}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      <span className="font-medium">{t("updatedAt")}:</span>
+                      <span>{formatDate(card.updatedAt)}</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             ))}

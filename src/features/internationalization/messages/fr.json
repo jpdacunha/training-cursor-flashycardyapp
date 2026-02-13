@@ -78,6 +78,8 @@
     "cardNumber": "Carte #{number}",
     "front": "Recto",
     "back": "Verso",
+    "createdAt": "Créée",
+    "updatedAt": "Modifiée",
     "edit": "Modifier",
     "delete": "Supprimer",
     "save": "Enregistrer",

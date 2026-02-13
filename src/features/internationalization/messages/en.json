@@ -78,6 +78,8 @@
     "cardNumber": "Card #{number}",
     "front": "Front",
     "back": "Back",
+    "createdAt": "Created",
+    "updatedAt": "Updated",
     "edit": "Edit",
     "delete": "Delete",
     "save": "Save",
