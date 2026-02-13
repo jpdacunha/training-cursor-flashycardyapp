@@ -1,6 +1,6 @@
 import { db } from '@/infrastructure/database/connection';
 import { cardsTable, decksTable } from '@/infrastructure/database/schema';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and, asc } from 'drizzle-orm';
 import { randomBytes } from 'crypto';
 
 const CARD_PUBLIC_ID_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -43,7 +43,7 @@ export async function getCardsByDeckId(deckId: number) {
     .select()
     .from(cardsTable)
     .where(eq(cardsTable.deckId, deckId))
-    .orderBy(desc(cardsTable.createdAt));
+    .orderBy(asc(cardsTable.id));
 }
 
 /**
@@ -202,7 +202,7 @@ export async function getDeckWithCards(deckId: number, userId: string) {
     .select()
     .from(cardsTable)
     .where(eq(cardsTable.deckId, deckId))
-    .orderBy(desc(cardsTable.createdAt));
+    .orderBy(asc(cardsTable.id));
   
   return {
     ...deck,

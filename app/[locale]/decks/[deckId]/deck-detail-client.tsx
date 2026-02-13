@@ -227,27 +227,31 @@ export function DeckDetailClient({ deck, cards: initialCards }: DeckDetailClient
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">
-                      {t("cardNumber", { number: index + 1 })}
+                      {t("cardNumber", { number: card.id })}
                     </CardTitle>
                     {editingCardId !== card.id && (
-                      <div className="flex gap-2">
+                      <div className="flex items-center gap-2">
                         <Button
                           variant="outline"
-                          size="sm"
+                          size="icon"
+                          className="h-9 w-9"
                           onClick={() => handleEdit(card)}
                           disabled={deletingCardId === card.id}
+                          aria-label={t("edit")}
+                          title={t("edit")}
                         >
-                          <Pencil className="mr-2 h-4 w-4" />
-                          {t("edit")}
+                          <Pencil />
                         </Button>
                         <Button
                           variant="destructive"
-                          size="sm"
+                          size="icon"
+                          className="h-9 w-9"
                           onClick={() => handleDelete(card.id)}
                           disabled={deletingCardId === card.id}
+                          aria-label={t("delete")}
+                          title={t("delete")}
                         >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          {deletingCardId === card.id ? "..." : t("delete")}
+                          <Trash2 />
                         </Button>
                       </div>
                     )}
