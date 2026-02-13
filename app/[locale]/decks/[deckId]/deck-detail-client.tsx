@@ -10,8 +10,8 @@ import { Separator } from "@/shared/components/ui/separator";
 import { EditDeckDialog } from "@/features/decks/components/edit-deck-dialog";
 import { AddCardDialog } from "@/features/cards/components/add-card-dialog";
 import { CompleteDeckDialog } from "@/features/decks/components/complete-deck-dialog";
-import { Pencil, Save, X, ArrowLeft } from "lucide-react";
-import { updateCard } from "@/features/cards/actions";
+import { Pencil, Save, X, ArrowLeft, Trash2 } from "lucide-react";
+import { deleteCard, updateCard } from "@/features/cards/actions";
 import { Link } from "@/features/internationalization/config";
 import { toast } from "sonner";
 import { ROUTES } from "@/core/constants/routes";
@@ -46,6 +46,7 @@ export function DeckDetailClient({ deck, cards: initialCards }: DeckDetailClient
   const [editFront, setEditFront] = useState("");
   const [editBack, setEditBack] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [deletingCardId, setDeletingCardId] = useState<number | null>(null);
 
   // Sync local state with props when they change (after router.refresh())
   useEffect(() => {
@@ -102,6 +103,42 @@ export function DeckDetailClient({ deck, cards: initialCards }: DeckDetailClient
       toast.error(t("updateError"));
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleDelete = async (cardId: number) => {
+    const confirmed = confirm(t("deleteConfirm"));
+    if (!confirmed) return;
+
+    console.debug("Deleting card with ID:", cardId);
+    setDeletingCardId(cardId);
+
+    try {
+      const result = await deleteCard({ cardId });
+
+      if (result.success) {
+        setCards((prevCards) => prevCards.filter((c) => c.id !== cardId));
+        toast.success(t("deleteSuccess"));
+      } else {
+        const errorMessage =
+          typeof result.error === "string"
+            ? result.error
+            : result.error
+              ? JSON.stringify(result.error)
+              : null;
+
+        if (errorMessage) {
+          toast.error(t("deleteError"), { description: errorMessage });
+        } else {
+          toast.error(t("deleteError"));
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting card:", error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      toast.error(t("deleteError"), { description: errorMessage });
+    } finally {
+      setDeletingCardId(null);
     }
   };
 
@@ -185,14 +222,26 @@ export function DeckDetailClient({ deck, cards: initialCards }: DeckDetailClient
                       {t("cardNumber", { number: index + 1 })}
                     </CardTitle>
                     {editingCardId !== card.id && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEdit(card)}
-                      >
-                        <Pencil className="mr-2 h-4 w-4" />
-                        {t("edit")}
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEdit(card)}
+                          disabled={deletingCardId === card.id}
+                        >
+                          <Pencil className="mr-2 h-4 w-4" />
+                          {t("edit")}
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDelete(card.id)}
+                          disabled={deletingCardId === card.id}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          {deletingCardId === card.id ? "..." : t("delete")}
+                        </Button>
+                      </div>
                     )}
                   </div>
                 </CardHeader>

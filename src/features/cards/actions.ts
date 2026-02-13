@@ -1,7 +1,13 @@
 "use server";
 
 import { auth } from '@clerk/nextjs/server';
-import { getCardById, updateCardInDb, createCardInDb, createCardsInDb } from '@/features/cards/queries';
+import {
+  getCardById,
+  updateCardInDb,
+  createCardInDb,
+  createCardsInDb,
+  deleteCardFromDb,
+} from '@/features/cards/queries';
 import { getDeckById } from '@/features/decks/queries';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
@@ -34,6 +40,12 @@ const BulkCreateCardsSchema = z.object({
 });
 
 type BulkCreateCardsInput = z.infer<typeof BulkCreateCardsSchema>;
+
+const DeleteCardSchema = z.object({
+  cardId: z.number().positive(),
+});
+
+type DeleteCardInput = z.infer<typeof DeleteCardSchema>;
 
 /**
  * Create a new card in a deck
@@ -178,5 +190,52 @@ export async function bulkCreateCards(input: BulkCreateCardsInput) {
   } catch (error) {
     console.error('Error creating cards:', error);
     return { success: false, error: 'Failed to create cards' };
+  }
+}
+
+/**
+ * Delete a card
+ * @param input - Card ID
+ * @returns Success response or error
+ */
+export async function deleteCard(input: DeleteCardInput) {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return { success: false, error: 'Unauthorized' };
+  }
+
+  const validationResult = DeleteCardSchema.safeParse(input);
+
+  if (!validationResult.success) {
+    return {
+      success: false,
+      error: validationResult.error.flatten().fieldErrors,
+    };
+  }
+
+  const { cardId } = validationResult.data;
+
+  try {
+    const card = await getCardById(cardId);
+
+    if (!card) {
+      return { success: false, error: 'Card not found' };
+    }
+
+    const deck = await getDeckById(card.deckId, userId);
+
+    if (!deck) {
+      return { success: false, error: 'Unauthorized to delete this card' };
+    }
+
+    await deleteCardFromDb(cardId);
+
+    revalidatePath(buildRoute.deck(deck.id));
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting card:', error);
+    return { success: false, error: 'Failed to delete card' };
   }
 }

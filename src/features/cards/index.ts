@@ -3,7 +3,7 @@
  */
 
 // Actions
-export { createCard, updateCard, bulkCreateCards } from './actions';
+export { createCard, updateCard, bulkCreateCards, deleteCard } from './actions';
 
 // Queries
 export {
