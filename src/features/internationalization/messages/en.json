@@ -81,6 +81,7 @@
     "createdAt": "Created",
     "updatedAt": "Updated",
     "edit": "Edit",
+    "viewDetails": "View details",
     "delete": "Delete",
     "save": "Save",
     "cancel": "Cancel",
@@ -131,6 +132,18 @@
     "cardLanguageRu": "Russian",
     "generatedCardNumber": "Generated Card #{number}",
     "addingCards": "Adding cards..."
+  },
+  "CardDetail": {
+    "cardName": "Card #{number}",
+    "readOnlyDescription": "Read-only card information view",
+    "deckName": "Deck",
+    "publicId": "Public identifier",
+    "createdAt": "Created",
+    "updatedAt": "Updated",
+    "front": "Front",
+    "back": "Back",
+    "backToDeck": "Back to deck",
+    "backToDashboard": "Back to Dashboard"
   }
 }
 

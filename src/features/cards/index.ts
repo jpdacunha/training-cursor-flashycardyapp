@@ -9,6 +9,7 @@ export { createCard, updateCard, bulkCreateCards, deleteCard } from './actions';
 export {
   getCardsByDeckId,
   getCardById,
+  getCardDetailById,
   createCardInDb,
   createCardsInDb,
   updateCardInDb,

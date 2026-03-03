@@ -10,11 +10,11 @@ import { Separator } from "@/shared/components/ui/separator";
 import { EditDeckDialog } from "@/features/decks/components/edit-deck-dialog";
 import { AddCardDialog } from "@/features/cards/components/add-card-dialog";
 import { CompleteDeckDialog } from "@/features/decks/components/complete-deck-dialog";
-import { Pencil, Save, X, ArrowLeft, Trash2, Calendar } from "lucide-react";
+import { Pencil, Save, X, ArrowLeft, Trash2, Calendar, Eye } from "lucide-react";
 import { deleteCard, updateCard } from "@/features/cards/actions";
 import { Link } from "@/features/internationalization/config";
 import { toast } from "sonner";
-import { ROUTES } from "@/core/constants/routes";
+import { buildRoute, ROUTES } from "@/core/constants/routes";
 
 interface CardData {
   id: number;
@@ -231,6 +231,17 @@ export function DeckDetailClient({ deck, cards: initialCards }: DeckDetailClient
                     </CardTitle>
                     {editingCardId !== card.id && (
                       <div className="flex items-center gap-2">
+                        <Link href={buildRoute.card(card.id)}>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-9 w-9"
+                            aria-label={t("viewDetails")}
+                            title={t("viewDetails")}
+                          >
+                            <Eye />
+                          </Button>
+                        </Link>
                         <Button
                           variant="outline"
                           size="icon"

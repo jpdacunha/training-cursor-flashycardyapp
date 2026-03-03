@@ -62,6 +62,33 @@ export async function getCardById(cardId: number) {
 }
 
 /**
+ * Get a specific card with deck metadata and verify ownership through deck.userId
+ * @param cardId - The card ID
+ * @param userId - The Clerk user ID for ownership verification
+ * @returns The card with deck title if found and owned by user, null otherwise
+ */
+export async function getCardDetailById(cardId: number, userId: string) {
+  const [result] = await db
+    .select({
+      card: cardsTable,
+      deck: decksTable,
+    })
+    .from(cardsTable)
+    .innerJoin(decksTable, eq(cardsTable.deckId, decksTable.id))
+    .where(and(eq(cardsTable.id, cardId), eq(decksTable.userId, userId)))
+    .limit(1);
+
+  if (!result) {
+    return null;
+  }
+
+  return {
+    ...result.card,
+    deckTitle: result.deck.title,
+  };
+}
+
+/**
  * Create a new card
  * @param deckId - The deck ID this card belongs to
  * @param front - Front side of the card

@@ -81,6 +81,7 @@
     "createdAt": "Créée",
     "updatedAt": "Modifiée",
     "edit": "Modifier",
+    "viewDetails": "Voir le détail",
     "delete": "Supprimer",
     "save": "Enregistrer",
     "cancel": "Annuler",
@@ -131,6 +132,18 @@
     "cardLanguageRu": "Russe",
     "generatedCardNumber": "Carte générée #{number}",
     "addingCards": "Ajout des cartes..."
+  },
+  "CardDetail": {
+    "cardName": "Carte #{number}",
+    "readOnlyDescription": "Consultation en lecture seule des informations de la carte",
+    "deckName": "Paquet",
+    "publicId": "Identifiant public",
+    "createdAt": "Créée",
+    "updatedAt": "Modifiée",
+    "front": "Recto",
+    "back": "Verso",
+    "backToDeck": "Retour au paquet",
+    "backToDashboard": "Retour au tableau de bord"
   }
 }
 
