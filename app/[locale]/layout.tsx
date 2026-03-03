@@ -8,6 +8,7 @@ import { routing } from "@/features/internationalization/config";
 import { Header } from "@/shared/components/layout/header";
 import { Footer } from "@/shared/components/layout/footer";
 import { Toaster } from "sonner";
+import { DEFAULT_REDIRECTS } from "@/core/constants/routes";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -34,7 +35,11 @@ export default async function LocaleLayout({
   return (
     <div lang={locale} className={`${poppins.variable} flex min-h-screen flex-col`}>
       <NextIntlClientProvider messages={messages}>
-        <ClerkProvider appearance={{ baseTheme: dark }}>
+        <ClerkProvider
+          appearance={{ baseTheme: dark }}
+          afterSignInUrl={DEFAULT_REDIRECTS.AFTER_LOGIN(locale)}
+          afterSignUpUrl={DEFAULT_REDIRECTS.AFTER_LOGIN(locale)}
+        >
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />

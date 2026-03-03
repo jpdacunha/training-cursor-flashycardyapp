@@ -8,19 +8,18 @@ import { DeckDetailClient } from "./deck-detail-client";
 export default async function DeckDetailPage({
   params,
 }: {
-  params: { deckId: string };
+  params: Promise<{ locale: string; deckId: string }>;
 }) {
+  const { locale, deckId } = await params;
   const { userId } = await auth();
 
   if (!userId) {
-    redirect(DEFAULT_REDIRECTS.UNAUTHENTICATED);
+    redirect(DEFAULT_REDIRECTS.UNAUTHENTICATED(locale));
   }
-
-  const { deckId } = await params;
   const deck = await getDeckById(parseInt(deckId), userId);
 
   if (!deck) {
-    redirect(DEFAULT_REDIRECTS.NOT_FOUND);
+    redirect(DEFAULT_REDIRECTS.NOT_FOUND(locale));
   }
 
   const cards = await getCardsByDeckId(parseInt(deckId));

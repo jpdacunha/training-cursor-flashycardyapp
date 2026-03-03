@@ -1,12 +1,15 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/shared/components/ui/button";
+import { DEFAULT_REDIRECTS } from "@/core/constants/routes";
 
 export default function HomeClient() {
   const t = useTranslations("Home");
   const { isSignedIn } = useUser();
+  const locale = useLocale();
+  const dashboardUrl = DEFAULT_REDIRECTS.AUTHENTICATED(locale);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -21,7 +24,7 @@ export default function HomeClient() {
         </div>
         <div className="flex flex-col gap-4 sm:flex-row">
           {!isSignedIn ? (
-            <SignInButton mode="modal">
+            <SignInButton mode="modal" forceRedirectUrl={dashboardUrl}>
               <Button size="lg" className="min-w-[150px]">
                 {t("signIn")}
               </Button>

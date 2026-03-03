@@ -3,11 +3,16 @@ import { redirect } from "next/navigation";
 import { DEFAULT_REDIRECTS } from "@/core/constants/routes";
 import HomeClient from "./home-client";
 
-export default async function Home() {
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
   const { userId } = await auth();
 
   if (userId) {
-    redirect(DEFAULT_REDIRECTS.AUTHENTICATED);
+    redirect(DEFAULT_REDIRECTS.AUTHENTICATED(locale));
   }
 
   return <HomeClient />;

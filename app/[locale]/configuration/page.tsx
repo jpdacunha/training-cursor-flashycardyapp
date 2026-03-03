@@ -18,11 +18,16 @@ export async function generateMetadata({
   };
 }
 
-export default async function ConfigurationPage() {
+export default async function ConfigurationPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
   const { userId } = await auth();
 
   if (!userId) {
-    redirect(DEFAULT_REDIRECTS.UNAUTHENTICATED);
+    redirect(DEFAULT_REDIRECTS.UNAUTHENTICATED(locale));
   }
 
   return (

@@ -7,15 +7,17 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/shared/components/ui/button";
 import { LanguageSwitcher } from "@/features/internationalization/components/language-switcher";
 import { Link } from "@/features/internationalization/config";
 import { Home, LayoutDashboard, Settings, LogIn, UserPlus } from "lucide-react";
-import { ROUTES } from "@/core/constants/routes";
+import { DEFAULT_REDIRECTS, ROUTES } from "@/core/constants/routes";
 
 export function Header() {
   const t = useTranslations("Layout");
+  const locale = useLocale();
+  const authenticatedRedirectUrl = DEFAULT_REDIRECTS.AUTHENTICATED(locale);
 
   return (
     <header className="flex items-center justify-between p-4 border-b border-zinc-800">
@@ -46,13 +48,13 @@ export function Header() {
       <div className="flex items-center gap-4">
         <LanguageSwitcher />
         <SignedOut>
-          <SignInButton mode="modal">
+          <SignInButton mode="modal" forceRedirectUrl={authenticatedRedirectUrl}>
             <Button variant="secondary">
               <LogIn className="w-4 h-4 mr-2" />
               {t("signIn")}
             </Button>
           </SignInButton>
-          <SignUpButton mode="modal">
+          <SignUpButton mode="modal" forceRedirectUrl={authenticatedRedirectUrl}>
             <Button>
               <UserPlus className="w-4 h-4 mr-2" />
               {t("signUp")}

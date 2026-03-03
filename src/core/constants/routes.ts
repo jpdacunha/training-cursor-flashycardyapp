@@ -20,12 +20,26 @@ export const ROUTES = {
 } as const;
 
 /**
+ * Prefix a non-localized route with a locale segment.
+ * Note: For the home route ('/'), we return `/${locale}` (no trailing slash).
+ */
+export function withLocale(locale: string, route: string) {
+  if (route === "/") return `/${locale}`;
+  return `/${locale}${route}`;
+}
+
+/**
  * Public route patterns for Clerk middleware
  * These patterns include locale prefixes and wildcards
  */
 export const PUBLIC_ROUTE_PATTERNS = [
   "/",
   "/:locale",
+  // When `localePrefix` is `as-needed`, the default locale (e.g. `en`) omits the prefix.
+  // These routes must be public both with and without the locale segment.
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/credits",
   "/:locale/sign-in(.*)",
   "/:locale/sign-up(.*)",
   "/:locale/credits",
@@ -36,20 +50,20 @@ export const PUBLIC_ROUTE_PATTERNS = [
  */
 export const DEFAULT_REDIRECTS = {
   /** Where unauthenticated users are redirected */
-  UNAUTHENTICATED: ROUTES.HOME,
+  UNAUTHENTICATED: (locale: string) => withLocale(locale, ROUTES.HOME),
 
   /** Where authenticated users are redirected by default */
-  AUTHENTICATED: ROUTES.DASHBOARD,
+  AUTHENTICATED: (locale: string) => withLocale(locale, ROUTES.DASHBOARD),
 
   /** Where to redirect when a resource is not found */
-  NOT_FOUND: ROUTES.DASHBOARD,
+  NOT_FOUND: (locale: string) => withLocale(locale, ROUTES.DASHBOARD),
 
   /** After successful login */
-  AFTER_LOGIN: ROUTES.DASHBOARD,
+  AFTER_LOGIN: (locale: string) => withLocale(locale, ROUTES.DASHBOARD),
 
   /** After logout */
-  AFTER_LOGOUT: ROUTES.HOME,
-} as const;
+  AFTER_LOGOUT: (locale: string) => withLocale(locale, ROUTES.HOME),
+} satisfies Record<string, (locale: string) => string>;
 
 /**
  * Helper functions to build dynamic routes
@@ -57,7 +71,7 @@ export const DEFAULT_REDIRECTS = {
 export const buildRoute = {
   deck: (deckId: number | string) => `${ROUTES.DECKS}/${deckId}`,
   deckWithLocale: (locale: string, deckId: number | string) =>
-    `/${locale}${ROUTES.DECKS}/${deckId}`,
+    withLocale(locale, `${ROUTES.DECKS}/${deckId}`),
 } as const;
 
 // Type exports for TypeScript

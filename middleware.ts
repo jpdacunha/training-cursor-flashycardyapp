@@ -1,5 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import createMiddleware from "next-intl/middleware";
+import { NextResponse } from "next/server";
 import { routing } from "./src/features/internationalization/config";
 import { PUBLIC_ROUTE_PATTERNS } from "./src/core/constants/routes";
 
@@ -9,6 +10,13 @@ const isPublicRoute = createRouteMatcher(PUBLIC_ROUTE_PATTERNS);
 
 export default clerkMiddleware(
   async (auth, request) => {
+    // Clerk uses internal rewrite paths (e.g. `/clerk_<timestamp>`) for control-flow.
+    // These are not user-facing routes and must not be processed by next-intl,
+    // otherwise they get locale-rewritten to e.g. `/en/clerk_*` and end up 404.
+    if (request.nextUrl.pathname.startsWith("/clerk_")) {
+      return NextResponse.next();
+    }
+
     if (!isPublicRoute(request)) {
       await auth.protect();
     }

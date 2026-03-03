@@ -15,11 +15,16 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   };
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
   const { userId } = await auth();
 
   if (!userId) {
-    redirect(DEFAULT_REDIRECTS.UNAUTHENTICATED);
+    redirect(DEFAULT_REDIRECTS.UNAUTHENTICATED(locale));
   }
 
   // Fetch user's decks using query helper
