@@ -81,6 +81,7 @@
     "createdAt": "Créée",
     "updatedAt": "Modifiée",
     "edit": "Modifier",
+    "viewCard": "Voir les détails de la carte",
     "delete": "Supprimer",
     "save": "Enregistrer",
     "cancel": "Annuler",
@@ -131,6 +132,19 @@
     "cardLanguageRu": "Russe",
     "generatedCardNumber": "Carte générée #{number}",
     "addingCards": "Ajout des cartes..."
+  },
+  "CardDetail": {
+    "title": "Détails de la carte",
+    "front": "Recto",
+    "back": "Verso",
+    "createdAt": "Créée le",
+    "updatedAt": "Dernière modification",
+    "deck": "Paquet",
+    "publicId": "Identifiant public",
+    "backToDeck": "Retour au paquet",
+    "cardInformation": "Informations de la carte",
+    "cardContent": "Contenu de la carte",
+    "metadata": "Métadonnées"
   }
 }
 

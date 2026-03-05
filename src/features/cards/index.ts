@@ -15,7 +15,8 @@ export {
   deleteCardFromDb,
   deleteCardsByDeckId,
   getCardCount,
-  getDeckWithCards
+  getDeckWithCards,
+  getCardWithDeck
 } from './queries';
 
 // Types

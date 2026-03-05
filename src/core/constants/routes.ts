@@ -72,6 +72,10 @@ export const buildRoute = {
   deck: (deckId: number | string) => `${ROUTES.DECKS}/${deckId}`,
   deckWithLocale: (locale: string, deckId: number | string) =>
     withLocale(locale, `${ROUTES.DECKS}/${deckId}`),
+  card: (deckId: number | string, cardId: number | string) =>
+    `${ROUTES.DECKS}/${deckId}/cards/${cardId}`,
+  cardWithLocale: (locale: string, deckId: number | string, cardId: number | string) =>
+    withLocale(locale, `${ROUTES.DECKS}/${deckId}/cards/${cardId}`),
 } as const;
 
 // Type exports for TypeScript

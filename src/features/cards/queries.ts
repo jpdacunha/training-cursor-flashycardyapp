@@ -209,3 +209,33 @@ export async function getDeckWithCards(deckId: number, userId: string) {
     cards,
   };
 }
+
+/**
+ * Get a card with its parent deck information
+ * @param cardId - The card ID
+ * @param userId - The Clerk user ID for ownership verification
+ * @returns Card with deck info, or null if not found or not owned
+ */
+export async function getCardWithDeck(cardId: number, userId: string) {
+  const [card] = await db
+    .select()
+    .from(cardsTable)
+    .where(eq(cardsTable.id, cardId))
+    .limit(1);
+
+  if (!card) {
+    return null;
+  }
+
+  const [deck] = await db
+    .select()
+    .from(decksTable)
+    .where(and(eq(decksTable.id, card.deckId), eq(decksTable.userId, userId)))
+    .limit(1);
+
+  if (!deck) {
+    return null;
+  }
+
+  return { card, deck };
+}
